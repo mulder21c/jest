@@ -1,15 +1,15 @@
 ---
 id: setup-teardown
-title: Setup and Teardown
+title: 설정과 분해
 ---
 
-Often while writing tests you have some setup work that needs to happen before tests run, and you have some finishing work that needs to happen after tests run. Jest provides helper functions to handle this.
+테스트를 작성하는 동안 종종 테스트가 수행되기 전에 발생할 필요가 있는 설정 작업이 있고, 테스트가 수행 된 이후 발생해야 할 필요가 있는 마무리 작업이 있습니다. Jest는 이를 처리하는 헬퍼 함수들을 제공합니다.
 
-## Repeating Setup For Many Tests
+## 많은 테스트를 위한 설정 반복
 
-If you have some work you need to do repeatedly for many tests, you can use `beforeEach` and `afterEach`.
+많은 테스트를 위해 반복적으로 수행될 필요가 있는 작업이 있다면, `beforeEach`오 `afterEach`를 사용할 수 있습니다.
 
-For example, let's say that several tests interact with a database of cities. You have a method `initializeCityDatabase()` that must be called before each of these tests, and a method `clearCityDatabase()` that must be called after each of these tests. You can do this with:
+예를 들어, 몇 가지 테스트가 도시의 데이테베이스와 상호작용한다고 가정해보세요. 이 각각의 테스트 전에 호출되어야 하는 메서드 `initializeCityDatabase()`와 각각의 테스트 이후에 호출되어야 하는 메서드 `clearCityDatabase()`가 있습니다. 다음과 같이 할 수 있습니다:
 
 ```js
 beforeEach(() => {
@@ -29,7 +29,7 @@ test('city database has San Juan', () => {
 });
 ```
 
-`beforeEach` and `afterEach` can handle asynchronous code in the same ways that [tests can handle asynchronous code](TestingAsyncCode.md) - they can either take a `done` parameter or return a promise. For example, if `initializeCityDatabase()` returned a promise that resolved when the database was initialized, we would want to return that promise:
+`beforeEach`와 `afterEach`는 [테스트는 비동기 코드가 처리할 수 있는](TestingAsyncCode.md) 동일한 방법으로 비동기 코드를 처리할 수 있습니다 - `done` 파라미터를 취하거나 프로미스를 반환시킬 수 있습니다. 예를 들어,  `initializeCityDatabase()`가 데이터베이스가 초기화 될 때 리졸브 된 프로미스를 반환한다면, 그 프로미스를 반환하려고 합니다:
 
 ```js
 beforeEach(() => {
@@ -37,11 +37,11 @@ beforeEach(() => {
 });
 ```
 
-## One-Time Setup
+## 일회성 설정
 
-In some cases, you only need to do setup once, at the beginning of a file. This can be especially bothersome when the setup is asynchronous, so you can't do it inline. Jest provides `beforeAll` and `afterAll` to handle this situation.
+경우에 따라, 파일의 시작 부분에 한 번만 설정할 필요가 있습니다. 설정이 비동기인 경우 특히 귀찮을 수 있으므로, 인라인으로 설정 할 수 없습니다. Jest는 이 상황을 처리하기 위한 `beforeAll`과 `afterAll`을 제공합니다.
 
-For example, if both `initializeCityDatabase` and `clearCityDatabase` returned promises, and the city database could be reused between tests, we could change our test code to:
+예를 들어, `initializeCityDatabase`과 `clearCityDatabase`가 모두 프로미스를 반환하고 도시 데이터베이스가 테스트 사이에서 재사용 될 수 있는 경우, 테스트 코드를 다음과 같이 변경할 수 있습니다:
 
 ```js
 beforeAll(() => {
@@ -61,14 +61,14 @@ test('city database has San Juan', () => {
 });
 ```
 
-## Scoping
+## 살펴보기
 
-By default, the `before` and `after` blocks apply to every test in a file. You can also group tests together using a `describe` block. When they are inside a `describe` block, the `before` and `after` blocks only apply to the tests within that `describe` block.
+기본적으로, `before`와 `after` 블럭은 파일의 모든 테스트에 적용됩니다. `describe` 블럭을 사용하여 테스트들을 그룹핑할 수도 있습니다. `describe` 블럭 안에 있을 경우, `before`와 `after` 블럭들은 그 `describe` 블럭 내부의 테스트에만 적용됩니다.
 
-For example, let's say we had not just a city database, but also a food database. We could do different setup for different tests:
+예를 들어, 도시 데이터 베이스 뿐만 아니라 음식 데이터 베이스도 있다고 가정해보세요. 테스트마다 다른 설정을 할 수 있습니다:
 
 ```js
-// Applies to all tests in this file
+// 이 파이의 모든 테스트에 적용됩니다
 beforeEach(() => {
   return initializeCityDatabase();
 });
@@ -82,7 +82,7 @@ test('city database has San Juan', () => {
 });
 
 describe('matching cities to foods', () => {
-  // Applies only to tests in this describe block
+  // 이 describe 블럭의 테스트에만 적용됩니다
   beforeEach(() => {
     return initializeFoodDatabase();
   });
@@ -97,7 +97,7 @@ describe('matching cities to foods', () => {
 });
 ```
 
-Note that the top-level `beforeEach` is executed before the `beforeEach` inside the `describe` block. It may help to illustrate the order of execution of all hooks.
+최 상위 레벨의 `beforeEach`가 `describe` 블럭 내부의 `beforeEach`이전에 실행되는 것에 주목하세요. 모든 훅의 실행 순서를 보여주는데 도움이 될 수 있습니다.
 
 ```js
 beforeAll(() => console.log('1 - beforeAll'));
