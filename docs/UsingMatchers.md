@@ -1,13 +1,13 @@
 ---
 id: using-matchers
-title: Using Matchers
+title: 매처(matcher) 사용하기
 ---
 
-Jest uses "matchers" to let you test values in different ways. This document will introduce some commonly used matchers. For the full list, see the [`expect` API doc](ExpectAPI.md).
+Jest는 다른 방법으로 값을 테스트 하도록 "매처"를 사용합니다. 이 문서는 일반적으로 사용되는 매처를 소개할 것입니다. 전체 목록을 보려면, [`expect` API 문서](ExpectAPI.md)를 참조하세요.
 
-## Common Matchers
+## 일반 매처
 
-The simplest way to test a value is with exact equality.
+값을 테스트 하기 위한 가장 단순한 방법은 정확한 일치를 사용하는 것입니다.
 
 ```js
 test('two plus two is four', () => {
@@ -15,9 +15,9 @@ test('two plus two is four', () => {
 });
 ```
 
-In this code, `expect(2 + 2)` returns an "expectation" object. You typically won't do much with these expectation objects except call matchers on them. In this code, `.toBe(4)` is the matcher. When Jest runs, it tracks all the failing matchers so that it can print out nice error messages for you.
+이 코드에서, `expect(2 + 2)`는 "예상" 객체를 반환합니다. 일반적으로 매처를 호출하는 것을 제외하고 이 예상 객체들로 더 이상의 것을 하지 않을 겁니다. 이 코드에서 `.toBe(4)`가 매처 입니다. Jest가 실행 될 때, 모든 실패한 매처를 추적하여 멋진 오류 메세지를 출력해 줄 수 있습니다.
 
-`toBe` uses `Object.is` to test exact equality. If you want to check the value of an object, use `toEqual` instead:
+`toBe`는 정확한 등가를 검사하기 위해 `Object.is`를 사용합니다. 객체의 값을 확인하려면, 대신 `toEqual`을 사용하세요:
 
 ```js
 test('object assignment', () => {
@@ -27,9 +27,9 @@ test('object assignment', () => {
 });
 ```
 
-`toEqual` recursively checks every field of an object or array.
+`toEqual`은 객체나 배열의 모든 필드를 재귀적으로 확인합니다.
 
-You can also test for the opposite of a matcher:
+매처의 반대를 테스트 할 수도 있습니다:
 
 ```js
 test('adding positive numbers is not zero', () => {
@@ -41,17 +41,17 @@ test('adding positive numbers is not zero', () => {
 });
 ```
 
-## Truthiness
+## 참
 
-In tests you sometimes need to distinguish between `undefined`, `null`, and `false`, but you sometimes do not want to treat these differently. Jest contains helpers that let you be explicit about what you want.
+테스트에서 때때로 `undefined`, `null`, `false`를 구별해야 할 필요가 있지만, 이를 별도로 다루는 것을 원치 않을 때도 있습니다. Jest는 원하는 것에 대해 명시적이게 할 수 있는 헬퍼를 포함하고 있습니다.
 
-- `toBeNull` matches only `null`
-- `toBeUndefined` matches only `undefined`
-- `toBeDefined` is the opposite of `toBeUndefined`
-- `toBeTruthy` matches anything that an `if` statement treats as true
-- `toBeFalsy` matches anything that an `if` statement treats as false
+- `toBeNull`은 `null`에만 일치합니다
+- `toBeUndefined`는 `undefined`에만 일치합니다
+- `toBeDefined`는 `toBeUndefined`의 반대입니다
+- `toBeTruthy`는 `if` 구문이 true로 취급하는 모든 것과 일치합니다
+- `toBeFalsy`는 `if` 구문이 false로 취급하는 모든 것과 일치합니다
 
-For example:
+예를 들어:
 
 ```js
 test('null', () => {
@@ -73,11 +73,11 @@ test('zero', () => {
 });
 ```
 
-You should use the matcher that most precisely corresponds to what you want your code to be doing.
+코드가 수행하기 원하는 것과 가장 정확하게 일치하는 매처를 사용하는게 좋습니다.
 
-## Numbers
+## 숫자
 
-Most ways of comparing numbers have matcher equivalents.
+숫자를 비교하는 대부분의 방법은 일치하는 동등한 매처를 가지고 있습니다.
 
 ```js
 test('two plus two', () => {
@@ -87,13 +87,13 @@ test('two plus two', () => {
   expect(value).toBeLessThan(5);
   expect(value).toBeLessThanOrEqual(4.5);
 
-  // toBe and toEqual are equivalent for numbers
+  // toBe와 toEqual은 숫자에 대해 동등합니다
   expect(value).toBe(4);
   expect(value).toEqual(4);
 });
 ```
 
-For floating point equality, use `toBeCloseTo` instead of `toEqual`, because you don't want a test to depend on a tiny rounding error.
+부동 소수점 등가의 경우, 테스트가 사소한 반올림 오류에 따라 달라지는 것을 원치 않으므로 `toEqual` 대신 `toBeCloseTo`를 사용하세요.
 
 ```js
 test('adding floating point numbers', () => {
@@ -103,9 +103,9 @@ test('adding floating point numbers', () => {
 });
 ```
 
-## Strings
+## 문자열
 
-You can check strings against regular expressions with `toMatch`:
+`toMatch`로 정규식과 비교하여 문자열을 검사할 수 있습니다:
 
 ```js
 test('there is no I in team', () => {
@@ -117,9 +117,9 @@ test('but there is a "stop" in Christoph', () => {
 });
 ```
 
-## Arrays and iterables
+## 배열과 이터러블
 
-You can check if an array or iterable contains a particular item using `toContain`:
+`toContain`를 사용하여 배열이나 이터러블이 특정 항목을 포함하는지 여부를 확인 할 수 있습니다:
 
 ```js
 const shoppingList = [
@@ -136,9 +136,9 @@ test('the shopping list has beer on it', () => {
 });
 ```
 
-## Exceptions
+## 예외
 
-If you want to test that a particular function throws an error when it's called, use `toThrow`.
+특정 함수가 호출될 때 오류를 발생시키는지를 테스트하려면 `toThrow`를 사용하세요.
 
 ```js
 function compileAndroidCode() {
@@ -149,14 +149,14 @@ test('compiling android goes as expected', () => {
   expect(compileAndroidCode).toThrow();
   expect(compileAndroidCode).toThrow(Error);
 
-  // You can also use the exact error message or a regexp
+  // 정확한 오류 메세지나 정규식을 사용할 수도 있습니다
   expect(compileAndroidCode).toThrow('you are using the wrong JDK');
   expect(compileAndroidCode).toThrow(/JDK/);
 });
 ```
 
-## And More
+## 그밖에
 
-This is just a taste. For a complete list of matchers, check out the [reference docs](ExpectAPI.md).
+이건 단지 맛보기 일뿐입니다. 매처의 전체 목록을 보려면 [참조 문서](ExpectAPI.md)를 확인하세요.
 
-Once you've learned about the matchers that are available, a good next step is to check out how Jest lets you [test asynchronous code](TestingAsyncCode.md).
+사용 가능한 매처들에 대해 학습한 이후, Jest로 [비동기 코드 검사](TestingAsyncCode.md) 하는 방법을 확인 하는 것이 좋습니다.
