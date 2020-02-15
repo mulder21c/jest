@@ -84,11 +84,11 @@ const repoUrl = 'https://github.com/facebook/jest';
 const siteConfig = {
   title: 'Jest',
   tagline: '🃏 Delightful JavaScript Testing',
-  url: 'https://jestjs.io',
-  cname: 'jestjs.io',
-  baseUrl: '/',
+  url: 'https://mulder21c.github.io/',
+  baseUrl: '/jest/',
   projectName: 'jest',
-  repo: 'facebook/jest',
+  organizationName: 'mulder21c',
+  repo: 'mulder21c/jest',
   users,
   videos,
   videoTypes,
@@ -115,7 +115,6 @@ const siteConfig = {
       facetFilters: ['language:LANGUAGE', 'version:VERSION'],
     },
   },
-  gaTrackingId: 'UA-44373548-17',
   colors: {
     primaryColor: '#10910e',
     secondaryColor: '#095708',
@@ -124,7 +123,7 @@ const siteConfig = {
   scripts: ['https://buttons.github.io/buttons.js'],
   repoUrl,
   siteConfigUrl:
-    'https://github.com/facebook/jest/edit/master/website/siteConfig.js',
+    'https://github.com/mulder21c/jest/edit/master/website/siteConfig.js',
   cleanUrl: true,
   twitter: true,
   twitterUsername: 'fbjest',
