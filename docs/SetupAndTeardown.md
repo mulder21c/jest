@@ -127,11 +127,11 @@ describe('Scoped / Nested block', () => {
 // 1 - afterAll
 ```
 
-## Order of execution of describe and test blocks
+## describe의 실행 순서와 테스트 블럭
 
-Jest executes all describe handlers in a test file _before_ it executes any of the actual tests. This is another reason to do setup and teardown inside `before*` and `after*` handlers rather than inside the describe blocks. Once the describe blocks are complete, by default Jest runs all the tests serially in the order they were encountered in the collection phase, waiting for each to finish and be tidied up before moving on.
+Jest는 실제 테스트를 실행하기 _전에_ 테스트 파일의 모든 describe 처리기를 실행합니다. 이것은 describe 블럭 내부보다 `before*`와 `after*` 내에서 설정과 분해를 수행하는 또 다른 이유입니다. describe 블럭이 완료되면, 기본적으로 Jest는 수집 단계에서 만난 순서대로 다음 단계로 순차적으로 모든 테스트를 수행하며, 다음 단계로 이동하기 전에 각각이 완료되고 정리되기를 기다립니다.
 
-Consider the following illustrative test file and output:
+다음 실례의 테스트 파일과 출력을 자세히 살펴보세요:
 
 ```js
 describe('outer', () => {
@@ -173,18 +173,18 @@ describe('outer', () => {
 // test for describe inner 2
 ```
 
-## General Advice
+## 일반적인 조언
 
-If a test is failing, one of the first things to check should be whether the test is failing when it's the only test that runs. To run only one test with Jest, temporarily change that `test` command to a `test.only`:
+테스트가 실패하는 경우, 가장 먼저 확인해야 할 사항 중 하나는 수행할 테스트가 유일할 경우 테스트가 실패하는가의 여부여야 합니다. Jest에서 단 하나의 테스트만 수행하기 위해, 임시적으로 그 `test` 명령어를 `test.only`로 변경하세요:
 
 ```js
-test.only('this will be the only test that runs', () => {
+test.only('이 테스트는 수행할 유일한 테스트가 될 것입니다', () => {
   expect(true).toBe(false);
 });
 
-test('this test will not run', () => {
+test('이 테스트는 수행되지 않을 것입니다', () => {
   expect('A').toBe('A');
 });
 ```
 
-If you have a test that often fails when it's run as part of a larger suite, but doesn't fail when you run it alone, it's a good bet that something from a different test is interfering with this one. You can often fix this by clearing some shared state with `beforeEach`. If you're not sure whether some shared state is being modified, you can also try a `beforeEach` that logs data.
+규모가 큰 스위트의 일부로 수행될 때 종종 실패하지만 단독으로 수행할 때에는 실패하지 않는 테스트가 있다면, 다른 테스트로부터의 무엇인가가 이 테스트를 간섭한다는 것은 좋은 추측입니다. `beforeEach`으로 일부 공유 상태를 명확하게 하여 종종 이를 고칠 수 있습니다. 일부 공유 상태가 수정되고 있는지 확실하지 않다면 데이터를 기록하는 `beforeEach`를 시도해 볼 수도 있습니다.
