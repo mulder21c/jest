@@ -1,15 +1,15 @@
 ---
 id: mock-functions
-title: Mock Functions
+title: 모의 함수
 ---
 
-Mock functions allow you to test the links between code by erasing the actual implementation of a function, capturing calls to the function (and the parameters passed in those calls), capturing instances of constructor functions when instantiated with `new`, and allowing test-time configuration of return values.
+모의 함수는 함수의 실제 구현을 삭제, 함수 호출을 (그리고 그 호출에 전달된 파라미터) 캡쳐, `new`로 인스트턴스화 될 때 생성자 함수의 인스턴스 캡쳐, 반화 값의 테스트 시간 구성을 허용하여  코드 사이의 연결을 테스트 할 수 있게 해줍니다.
 
-There are two ways to mock functions: Either by creating a mock function to use in test code, or writing a [`manual mock`](ManualMocks.md) to override a module dependency.
+모의 함수를 위한 두 가지 방법이 있습니다: 테스트 코드에 사용할 모의 함수를 생성하거나, 의존선 모듈을 오버라이드 하기 위해 [`manual mock`](ManualMocks.md) 함수를 생성.
 
-## Using a mock function
+## 모의 함수 사용하기
 
-Let's imagine we're testing an implementation of a function `forEach`, which invokes a callback for each item in a supplied array.
+제공된 배열의 각 항목에 대한 콜백을 실행하는 `forEach` 함수의 구현을 테스트 하고 있다고 생각해보세요.
 
 ```javascript
 function forEach(items, callback) {
@@ -19,28 +19,28 @@ function forEach(items, callback) {
 }
 ```
 
-To test this function, we can use a mock function, and inspect the mock's state to ensure the callback is invoked as expected.
+이 함수를 테스트 하기 위해, 모의 함수를 사용하고 콜백이 예상대로 호출 되는지를 확인하기 위해 모의 함수의 상태를 검사할 수 있습니다.
 
 ```javascript
 const mockCallback = jest.fn(x => 42 + x);
 forEach([0, 1], mockCallback);
 
-// The mock function is called twice
+// 모의 함수가 두 번 호출 됩니다
 expect(mockCallback.mock.calls.length).toBe(2);
 
-// The first argument of the first call to the function was 0
+// 함수에 대한 첫 번째 호출의 첫 번째 인자는 0 이었음
 expect(mockCallback.mock.calls[0][0]).toBe(0);
 
-// The first argument of the second call to the function was 1
+// 함수에 대한 두 번째 호출의 첫 번째 인자는 1 이었음
 expect(mockCallback.mock.calls[1][0]).toBe(1);
 
-// The return value of the first call to the function was 42
+// 함수에 대한 첫 번째 호출의 반환 된 값은 42 이었음
 expect(mockCallback.mock.results[0].value).toBe(42);
 ```
 
-## `.mock` property
+## `.mock` 속성(property)
 
-All mock functions have this special `.mock` property, which is where data about how the function has been called and what the function returned is kept. The `.mock` property also tracks the value of `this` for each call, so it is possible to inspect this as well:
+모든 모의 함수는 함수가 호출된 방법과 반환된 함수가 보관하고 있는 것에 대한 데이터가 보관된 특별한 `.mock` 속성을 가지고 있습니다. `.mock` 속성은 각 호출에 대한 `this` 값도 추적하므로, 다음 사항을 검사하는 것도 가능합니다:
 
 ```javascript
 const myMock = jest.fn();
@@ -54,32 +54,32 @@ console.log(myMock.mock.instances);
 // > [ <a>, <b> ]
 ```
 
-These mock members are very useful in tests to assert how these functions get called, instantiated, or what they returned:
+이 모의 멤버는 테스트에서 이 함수들이 호출되는 방법이나 인스턴스화 되는 방법, 혹은 무엇을 반환하는지를 확고히 하는데 매우 유용합니다:
 
 ```javascript
-// The function was called exactly once
+// 함수는 정확히 한 번 호출됩니다
 expect(someMockFunction.mock.calls.length).toBe(1);
 
-// The first arg of the first call to the function was 'first arg'
+// 함수에 대한 첫 번째 호출의 첫 번째 인자는 'first arg' 이었음
 expect(someMockFunction.mock.calls[0][0]).toBe('first arg');
 
-// The second arg of the first call to the function was 'second arg'
+// 함수에 대한 첫 번째 호출의 두 번째 인자는 'second arg' 이었음
 expect(someMockFunction.mock.calls[0][1]).toBe('second arg');
 
-// The return value of the first call to the function was 'return value'
+// 함수에 대한 첫 번째 호출의 반환 값은 'return value' 이었음
 expect(someMockFunction.mock.results[0].value).toBe('return value');
 
-// This function was instantiated exactly twice
+// 이 함수는 정확히 두 번 인스턴스화 되었음
 expect(someMockFunction.mock.instances.length).toBe(2);
 
-// The object returned by the first instantiation of this function
-// had a `name` property whose value was set to 'test'
+// 값이 `test`로 설정 된 `name` 프로퍼티를 가진
+// 이 함수의 첫 번째 인스턴스화에 의해 반환된 객체
 expect(someMockFunction.mock.instances[0].name).toEqual('test');
 ```
 
-## Mock Return Values
+## 모의 반환 값
 
-Mock functions can also be used to inject test values into your code during a test:
+모의 함수는 테스트 중에 코드에 테스트 값을 주입할 수도 있습니다:
 
 ```javascript
 const myMock = jest.fn();
@@ -95,13 +95,13 @@ console.log(myMock(), myMock(), myMock(), myMock());
 // > 10, 'x', true, true
 ```
 
-Mock functions are also very effective in code that uses a functional continuation-passing style. Code written in this style helps avoid the need for complicated stubs that recreate the behavior of the real component they're standing in for, in favor of injecting values directly into the test right before they're used.
+모의 함수는 연속 전달 스타일을 함수를 사용하는 코드에서 매우 효과적입니다. 이 스타일로 작성된 코드는 사용되기 바로 전에 테스트에 직접 값을 주입시키기 위해 서있는 실제 구성 요소의 동작을 재생성하는 복잡한 스텁에 대한 필요성을 방지하는데 도움이 됩니다.
 
 ```javascript
 const filterTestFn = jest.fn();
 
-// Make the mock return `true` for the first call,
-// and `false` for the second call
+// 모의가 첫 번째 호출에 대해 `true`를 반환하도록 하고,
+// 두 번째 호출에 대해 `false`를 반환하게 합니다
 filterTestFn.mockReturnValueOnce(true).mockReturnValueOnce(false);
 
 const result = [11, 12].filter(num => filterTestFn(num));
@@ -112,11 +112,11 @@ console.log(filterTestFn.mock.calls);
 // > [ [11], [12] ]
 ```
 
-Most real-world examples actually involve getting ahold of a mock function on a dependent component and configuring that, but the technique is the same. In these cases, try to avoid the temptation to implement logic inside of any function that's not directly being tested.
+대부분의 현실 세계 예제는 의존성 컴포넌트에서의 모의 함수를 연결짓고 그것을 구성하여 호출 하지만, 기법은 동일합니다. 이 경우, 직접 테스트 되지 않는 함수 내부에 로직을 구현하려는 유혹을 방지하세요.
 
-## Mocking Modules
+## 모의 모듈
 
-Suppose we have a class that fetches users from our API. The class uses [axios](https://github.com/axios/axios) to call the API then returns the `data` attribute which contains all the users:
+API로부터 사용자를 가져오는 클래스가 있다고 가정해보세요. 클래스는 API를 호출하고 이후 모든 사용자를 포함하는 `data` 속성(attribute)를 반환시키기 위해 [axios](https://github.com/axios/axios)를 사용합니다:
 
 ```js
 // users.js
@@ -131,9 +131,9 @@ class Users {
 export default Users;
 ```
 
-Now, in order to test this method without actually hitting the API (and thus creating slow and fragile tests), we can use the `jest.mock(...)` function to automatically mock the axios module.
+이제, 실제로 API에 영향을 미치지 않고 이 메서드를 테스트 하기 위해 (그리고 따라서 느리고 취약한 테스트를 생성하여), 자동적으로 axios 모듈을 모의하도록 `jest.mock(...)` 함수를 사용할 수 있습니다.
 
-Once we mock the module we can provide a `mockResolvedValue` for `.get` that returns the data we want our test to assert against. In effect, we are saying that we want axios.get('/users.json') to return a fake response.
+모듈을 모의 할 때 테스트가 확고히 하기 원하는 데이터를 반환하는 `.get`에 대해 `mockResolvedValue`를 제공할 수 있습니다. 실제로는, axios.get('/users.json')이 가짜 응답을 반환하기 원한다고 표현합니다.
 
 ```js
 // users.test.js
@@ -147,16 +147,16 @@ test('should fetch users', () => {
   const resp = {data: users};
   axios.get.mockResolvedValue(resp);
 
-  // or you could use the following depending on your use case:
+  // 또는 사용 사례에 따라 다음을 사용할 수 있습니다:
   // axios.get.mockImplementation(() => Promise.resolve(resp))
 
   return Users.all().then(data => expect(data).toEqual(users));
 });
 ```
 
-## Mock Implementations
+## 모의 구현
 
-Still, there are cases where it's useful to go beyond the ability to specify return values and full-on replace the implementation of a mock function. This can be done with `jest.fn` or the `mockImplementationOnce` method on mock functions.
+그럼에도 불구하고, 반환 값을 지정하는 기능을 넘어서 극단적으로 모의 함수의 구현을 대체하는 것이 유용한 경우가 있습니다. 이는 모의 함수에 `jest.fn`나 `mockImplementationOnce`로 수행 될 수 있습니다.
 
 ```javascript
 const myMockFn = jest.fn(cb => cb(null, true));
@@ -165,25 +165,25 @@ myMockFn((err, val) => console.log(val));
 // > true
 ```
 
-The `mockImplementation` method is useful when you need to define the default implementation of a mock function that is created from another module:
+`mockImplementation` 메서드는 다른 모듈로부터 생성된 모의 함수의 기본 구현을 정의할 필요가 있을 때 유용합니다:
 
 ```js
 // foo.js
 module.exports = function() {
-  // some implementation;
+  // 어떤 구현;
 };
 
 // test.js
-jest.mock('../foo'); // this happens automatically with automocking
+jest.mock('../foo'); // 이것은 자동모의를 통해 자동적으로 발생합니다
 const foo = require('../foo');
 
-// foo is a mock function
+// foo가 모의 함수입니다
 foo.mockImplementation(() => 42);
 foo();
 // > 42
 ```
 
-When you need to recreate a complex behavior of a mock function such that multiple function calls produce different results, use the `mockImplementationOnce` method:
+여러 함수 호출이 다른 결과를 생성하는 것처럼 모의 함수의 복잡한 동작을 재생성해야 하는 경우, `mockImplementationOnce` 메서드를 사용하세요:
 
 ```javascript
 const myMockFn = jest
@@ -198,7 +198,7 @@ myMockFn((err, val) => console.log(val));
 // > false
 ```
 
-When the mocked function runs out of implementations defined with `mockImplementationOnce`, it will execute the default implementation set with `jest.fn` (if it is defined):
+모의 함수가 `mockImplementationOnce`로 정의된 구현을 소진할 경우, `jest.fn`으로 설정된 (정의가 되어 있다면) 기본 구현이 실행될 것입니다:
 
 ```javascript
 const myMockFn = jest
@@ -210,14 +210,14 @@ console.log(myMockFn(), myMockFn(), myMockFn(), myMockFn());
 // > 'first call', 'second call', 'default', 'default'
 ```
 
-For cases where we have methods that are typically chained (and thus always need to return `this`), we have a sugary API to simplify this in the form of a `.mockReturnThis()` function that also sits on all mocks:
+일반적으로 체이닝 된 메서드가 있는 (그리고 때문에 항상 `this`를 반환할 필요가 있는) 경우에, 모든 모의에 적용되는 `.mockReturnThis()` 함수의 형식으로 이를 단순화 하는 설탕 API가 있습니다:
 
 ```javascript
 const myObj = {
   myMethod: jest.fn().mockReturnThis(),
 };
 
-// is the same as
+// 다음과 동일합니다
 
 const otherObj = {
   myMethod: jest.fn(function() {
@@ -226,9 +226,9 @@ const otherObj = {
 };
 ```
 
-## Mock Names
+## 모의 이름
 
-You can optionally provide a name for your mock functions, which will be displayed instead of "jest.fn()" in test error output. Use this if you want to be able to quickly identify the mock function reporting an error in your test output.
+선택적으로 테스트 오류 출력에 "jest.fn()" 대신 표기될, 모의 함수에 대한 이름을 제공할 수 있습니다. 테스트 출력에서 오류를 리포트하는 모의 함수를 빠르게 식별하려면 이를 사용하세요.
 
 ```javascript
 const myMockFn = jest
@@ -238,47 +238,48 @@ const myMockFn = jest
   .mockName('add42');
 ```
 
-## Custom Matchers
+## 사용자 정의 매처
 
-Finally, in order to make it less demanding to assert how mock functions have been called, we've added some custom matcher functions for you:
+마지막으로, 모의 함수가 어떻게 호출되었는지를 확인하는데 부담을 덜기 위해, 몇 가지 사용자 정의 매처 함수를 추가했습니다:
 
 ```javascript
-// The mock function was called at least once
+// 모의 함수가 적어도 한 번은 호출되었습니다
 expect(mockFunc).toHaveBeenCalled();
 
-// The mock function was called at least once with the specified args
+// 모의 함수가 특정 인자를 가지고 적어도 한 번은 호출되었습니다
 expect(mockFunc).toHaveBeenCalledWith(arg1, arg2);
 
-// The last call to the mock function was called with the specified args
+// 모의 함수에 대한 마지막 호출이 특정 인자를 가지고 호출되었습니다
 expect(mockFunc).toHaveBeenLastCalledWith(arg1, arg2);
 
-// All calls and the name of the mock is written as a snapshot
+// 모든 호출과 모의의 이름이 스냅샷으로 기록되었습니다
 expect(mockFunc).toMatchSnapshot();
 ```
 
-These matchers are sugar for common forms of inspecting the `.mock` property. You can always do this manually yourself if that's more to your taste or if you need to do something more specific:
+이 매처들은 `.mock` 속성(property) 검사의 일반적인 형태를 위한 설탕입니다. 그것이 취향에 더 맞거나 더 구체적인 무언가를 해야 하는 경우 항상 수동으로 이것을 직접 할 수 있습니다:
 
 ```javascript
-// The mock function was called at least once
+// 모의 함수는 적어도 한 번 호출되었습니다
 expect(mockFunc.mock.calls.length).toBeGreaterThan(0);
 
-// The mock function was called at least once with the specified args
+// 모의 함수가 특정 인자를 가지고 적어도 한 번은 호출되었습니다
 expect(mockFunc.mock.calls).toContainEqual([arg1, arg2]);
 
-// The last call to the mock function was called with the specified args
+// 모의 함수에 대한 마지막 호출이 특정 인자를 가지고 호출되었습니다
 expect(mockFunc.mock.calls[mockFunc.mock.calls.length - 1]).toEqual([
   arg1,
   arg2,
 ]);
 
-// The first arg of the last call to the mock function was `42`
-// (note that there is no sugar helper for this specific of an assertion)
+// 모의 함수에 대한 마지막 호출의 첫 번째 인자가 `42` 이었습니다
+// (이 특정 단언에 대한 설탕 헬퍼가 존재하지 않는 것에 주목하세요)
 expect(mockFunc.mock.calls[mockFunc.mock.calls.length - 1][0]).toBe(42);
 
-// A snapshot will check that a mock was invoked the same number of times,
-// in the same order, with the same arguments. It will also assert on the name.
+// 스냅샷은 모의가 동일한 인자를 가지고 동일한 순서로, 동일한 횟수만큼 호출되었는지
+// 확인할 것입니다. 이름에 대해서도 확인할 것입니다.
+
 expect(mockFunc.mock.calls).toEqual([[arg1, arg2]]);
 expect(mockFunc.getMockName()).toBe('a mock name');
 ```
 
-For a complete list of matchers, check out the [reference docs](ExpectAPI.md).
+매처의 전체 목록은 [참조 문서](ExpectAPI.md)를 확인하세요.
