@@ -98,8 +98,8 @@ test('two plus two', () => {
 ```js
 test('adding floating point numbers', () => {
   const value = 0.1 + 0.2;
-  //expect(value).toBe(0.3);           This won't work because of rounding error
-  expect(value).toBeCloseTo(0.3); // This works.
+  //expect(value).toBe(0.3);           반올림 오류로 동작하지 않을 것입니다
+  expect(value).toBeCloseTo(0.3); // 동작합니다
 });
 ```
 

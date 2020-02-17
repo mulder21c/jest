@@ -29,7 +29,7 @@ test('city database has San Juan', () => {
 });
 ```
 
-`beforeEach`와 `afterEach`는 [테스트는 비동기 코드가 처리할 수 있는](TestingAsyncCode.md) 동일한 방법으로 비동기 코드를 처리할 수 있습니다 - `done` 파라미터를 취하거나 프로미스를 반환시킬 수 있습니다. 예를 들어,  `initializeCityDatabase()`가 데이터베이스가 초기화 될 때 리졸브 된 프로미스를 반환한다면, 그 프로미스를 반환하려고 합니다:
+`beforeEach`와 `afterEach`는 [테스트는 비동기 코드가 처리할 수 있는](TestingAsyncCode.md) 동일한 방법으로 비동기 코드를 처리할 수 있습니다 - `done` 파라미터를 취하거나 프로미스를 반환시킬 수 있습니다. 예를 들어, `initializeCityDatabase()`가 데이터베이스가 초기화 될 때 리졸브 된 프로미스를 반환한다면, 그 프로미스를 반환하려고 합니다:
 
 ```js
 beforeEach(() => {
