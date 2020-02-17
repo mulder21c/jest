@@ -1,15 +1,15 @@
 ---
 id: snapshot-testing
-title: Snapshot Testing
+title: 스냅샷 테스팅
 ---
 
-Snapshot tests are a very useful tool whenever you want to make sure your UI does not change unexpectedly.
+스냅샷 테스트는 UI가 예상 밖으로 변경되지 않도록 하기 원하는 경우 매우 유용한 도구입니다.
 
-A typical snapshot test case for a mobile app renders a UI component, takes a snapshot, then compares it to a reference snapshot file stored alongside the test. The test will fail if the two snapshots do not match: either the change is unexpected, or the reference snapshot needs to be updated to the new version of the UI component.
+모바일 앱에 대한 일반적인 스냅샷 테스트 케이스는 UI 컴포넌트를 렌더링 하고, 스냅샷을 찍은 다음, 참조 저장된 스냅샷 파일과 테스트를 나란히 비교합니다. 두 스냅샷이 일치하지 않는다면 테스트는 실패할 것입니다: 변경이 예상 밖이거나, 참조 스냅샷이 UI 컴포넌트의 새로운 버전으로 업데이트 될 필요가 있는 경우.
 
-## Snapshot Testing with Jest
+## Jest로 스냅샷 테스트 하기
 
-A similar approach can be taken when it comes to testing your React components. Instead of rendering the graphical UI, which would require building the entire app, you can use a test renderer to quickly generate a serializable value for your React tree. Consider this [example test](https://github.com/facebook/jest/blob/master/examples/snapshot/__tests__/link.react.test.js) for a [Link component](https://github.com/facebook/jest/blob/master/examples/snapshot/Link.react.js):
+React 컴포넌트를 테스트 할 때 비슷한 방법을 취할 수 있습니다. 전체 앱을 빌드해야 햐는 그래픽 UI를 렌더링 하는 대신, React 트리에 대해 연속될 수 있는 값을 빠르게 생성하도록 테스트 렌더러를 사용할 수 있습니다. [Link 컴포넌트](https://github.com/facebook/jest/blob/master/examples/snapshot/Link.react.js)에 대한 이 [예제 테스트](https://github.com/facebook/jest/blob/master/examples/snapshot/__tests__/link.react.test.js)를 자세히 살펴보세요:
 
 ```javascript
 import React from 'react';
@@ -24,7 +24,7 @@ it('renders correctly', () => {
 });
 ```
 
-The first time this test is run, Jest creates a [snapshot file](https://github.com/facebook/jest/blob/master/examples/snapshot/__tests__/__snapshots__/link.react.test.js.snap) that looks like this:
+이 테스트가 처음 수행될 때, Jest는 이와 같이 보이는 [스냅샷 파일](https://github.com/facebook/jest/blob/master/examples/snapshot/__tests__/__snapshots__/link.react.test.js.snap)을 생성합니다:
 
 ```javascript
 exports[`renders correctly 1`] = `
@@ -39,20 +39,20 @@ exports[`renders correctly 1`] = `
 `;
 ```
 
-The snapshot artifact should be committed alongside code changes, and reviewed as part of your code review process. Jest uses [pretty-format](https://github.com/facebook/jest/tree/master/packages/pretty-format) to make snapshots human-readable during code review. On subsequent test runs Jest will compare the rendered output with the previous snapshot. If they match, the test will pass. If they don't match, either the test runner found a bug in your code (in this case, it's `<Link>` component) that should be fixed, or the implementation has changed and the snapshot needs to be updated.
+스냅샷 산출물은 코드 변경과 함께 커밋되어야 하고, 코드 리뷰 절차의 일부로 검토되어야 합니다. Jest는 코드 리뷰 동안 사람이 읽을 수 있는 스냅샷을 만들기 위해 [pretty-format](https://github.com/facebook/jest/tree/master/packages/pretty-format)을 사용합니다. 후속 테스트가 수행 될 때 Jest는 이전 스냅샷과 렌더링 된 출력을 비교할 것입니다. 그것들이 일치한다면, 테스트는 통과할 것입니다. 일치하지 않는다면, 테스트 실행기는 수정되어야 하는 코드 상의 버그를  (이 경우, 그것은 `<Link>` 컴포넌트입니다) 발견했거나, 구현이 변경되어 스냅샷이 업데이트 되어야 할 필요가 있습니다.
 
-> Note: The snapshot is directly scoped to the data you render – in our example it's `<Link />` component with page prop passed to it. This implies that even if any other file has missing props (Say, `App.js`) in the `<Link />` component, it will still pass the test as the test doesn't know the usage of `<Link />` component and it's scoped only to the `Link.react.js`. Also, Rendering the same component with different props in other snapshot tests will not affect the first one, as the tests don't know about each other.
+> 참고: 스냅샷은 렌더링 한 데이터로 직접 범위가 지정됩니다 - 이 예에서 그것은 전달된 page props를 가진 `<Link />` 컴포넌트입니다. 이것은 다른 파일이 `<Link />` 컴포넌트에 props를 누락시켰다 하더라도 (`App.js`라고 합시다), 테스트는 `<Link />` 컴포넌트의 사용법을 알지 못하고 그것의 범위가 오직 `Link.react.js`이기 때문에 그것이 여전히 테스트를 통과 할 것을 의미합니다. 또한 서로 다른 스냅샷 테스트에서 다른 props를 가진 동일한 컴포넌트를 렌더링하는 것은 테스트가 각 다른 것에 대해 알지 못하기 때문에 첫 번째 것에 영향이 없습니다.
 
-More information on how snapshot testing works and why we built it can be found on the [release blog post](https://jestjs.io/blog/2016/07/27/jest-14.html). We recommend reading [this blog post](http://benmccormick.org/2016/09/19/testing-with-jest-snapshots-first-impressions/) to get a good sense of when you should use snapshot testing. We also recommend watching this [egghead video](https://egghead.io/lessons/javascript-use-jest-s-snapshot-testing-feature?pl=testing-javascript-with-jest-a36c4074) on Snapshot Testing with Jest.
+스냅샷 테스팅이 어떻게 동작하는 지와 왜 우리가 그것을 구축했는지에 대한 더 자세한 내용은 [릴리즈 블로그 게시글](https://jestjs.io/blog/2016/07/27/jest-14.html)에서 찾아볼 수 있습니다. 언제 스냅샷 테스팅을 사용해야 하는지를 잘 이애하려면 [이 블로그 게시글](http://benmccormick.org/2016/09/19/testing-with-jest-snapshots-first-impressions/)을 읽어볼 것은 권합니다. Jest로 스냅샷 테스팅에 [egghead 영상](https://egghead.io/lessons/javascript-use-jest-s-snapshot-testing-feature?pl=testing-javascript-with-jest-a36c4074)을 보는 것도 추천합니다.
 
-### Updating Snapshots
+### 스냅샷 업데이트
 
-It's straightforward to spot when a snapshot test fails after a bug has been introduced. When that happens, go ahead and fix the issue and make sure your snapshot tests are passing again. Now, let's talk about the case when a snapshot test is failing due to an intentional implementation change.
+버그가 들어온 이후 스냅샷 테스트가 실패하면 이를 빼내는 것은 간단합니다. 실패가 일어나면 진행하고 문제를 해결하고 다시 스냅샷 테스트가 통과하도록 합니다. 이제, 의도적인 구현 변경으로 인해 스냅샷 테스트가 실패하는 경우에 대해 이야기 하겠습니다.
 
-One such situation can arise if we intentionally change the address the Link component in our example is pointing to.
+예제에서 Link 컴포넌트가 가리키는 주소를 의도적으로 변경할 경우 이러한 상황이 발생될 수 있습니다.
 
 ```javascript
-// Updated test case with a Link to a different address
+// 다른 주소로의 Link를 가진 업데이트 된 테스트 케이스
 it('renders correctly', () => {
   const tree = renderer
     .create(<Link page="http://www.instagram.com">Instagram</Link>)
@@ -61,39 +61,39 @@ it('renders correctly', () => {
 });
 ```
 
-In that case, Jest will print this output:
+그 경우, Jest는 다음의 결과를 출력할 것입니다:
 
-![](/img/content/failedSnapshotTest.png)
+![](/jest/img/content/failedSnapshotTest.png)
 
-Since we just updated our component to point to a different address, it's reasonable to expect changes in the snapshot for this component. Our snapshot test case is failing because the snapshot for our updated component no longer matches the snapshot artifact for this test case.
+다른 주소를 가리키도록 컴포넌트를 업데이트 했기 때문에, 이 컴포넌트에 대한 스냅샷의 변경을 예상하는 것이 합리적입니다. 이 경우 업데이트 된 컴포넌트에 대한 스냅샷이 더 이상 스냅샵 산출물과 일치하지 않기 때문에 스냅샷 테스트 케이스는 실패합니다.
 
-To resolve this, we will need to update our snapshot artifacts. You can run Jest with a flag that will tell it to re-generate snapshots:
+이를 해결하려면, 스냅샷 산물출을 업데이트 해야 할 필요가 있습니다. 스냅샷을 재생성 하라고 전달하는 플래그를 가지고 Jest를 실행 할 수 있습니다:
 
 ```bash
 jest --updateSnapshot
 ```
 
-Go ahead and accept the changes by running the above command. You may also use the equivalent single-character `-u` flag to re-generate snapshots if you prefer. This will re-generate snapshot artifacts for all failing snapshot tests. If we had any additional failing snapshot tests due to an unintentional bug, we would need to fix the bug before re-generating snapshots to avoid recording snapshots of the buggy behavior.
+위 명령을 실행하여 계속 진행하고 변경을 적용하세요. 원한다면 스냅샷을 재생성 하도록 동등한 단일 문자 `-u` 플래그를 사용할 수도 있습니다. 이것은 모든 실패 스냅샷 테스트에 대해 스냅샨 산출물을 재생성 할 것입니다. 의도하지 않은 버그로 인해 추가적인 실패 스냅샷 테스트가 있다면, 버그가 있는 동작의 스냅샷을 기록하는 것을 방지하도록 스냅샷을 재생성하기 전에 버그를 수정 할 필요가 있습니다.
 
-If you'd like to limit which snapshot test cases get re-generated, you can pass an additional `--testNamePattern` flag to re-record snapshots only for those tests that match the pattern.
+재생성되는 스냅샷 테스트 케이스를 제한하고자 한다면, 패턴과 일치하는 테스트에 대해서만 스냅샷을 재생성하도록 추가 `--testNamePattern` 플래그를 전달 할 수 잇습니다.
 
-You can try out this functionality by cloning the [snapshot example](https://github.com/facebook/jest/tree/master/examples/snapshot), modifying the `Link` component, and running Jest.
+[스냅샷 예제](https://github.com/facebook/jest/tree/master/examples/snapshot)를 복제하고, `Link` 컴포넌트를 수정하고, Jest를 실행하여 이 기능을 테스트 해 볼 수 있습니다.
 
-### Interactive Snapshot Mode
+### 대화형 스냅샷 모드
 
-Failed snapshots can also be updated interactively in watch mode:
+실패한 스냅샷은 watch 모드에서 대화식으로 업데이트 될 수도 있습니다:
 
-![](/img/content/interactiveSnapshot.png)
+![](/jest/img/content/interactiveSnapshot.png)
 
 Once you enter Interactive Snapshot Mode, Jest will step you through the failed snapshots one test at a time and give you the opportunity to review the failed output.
 
 From here you can choose to update that snapshot or skip to the next:
 
-![](/img/content/interactiveSnapshotUpdate.gif)
+![](/jest/img/content/interactiveSnapshotUpdate.gif)
 
 Once you're finished, Jest will give you a summary before returning back to watch mode:
 
-![](/img/content/interactiveSnapshotDone.png)
+![](/jest/img/content/interactiveSnapshotDone.png)
 
 ### Inline Snapshots
 
