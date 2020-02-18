@@ -85,27 +85,27 @@ jest --updateSnapshot
 
 ![](/jest/img/content/interactiveSnapshot.png)
 
-Once you enter Interactive Snapshot Mode, Jest will step you through the failed snapshots one test at a time and give you the opportunity to review the failed output.
+대화형 스냅샷 모드로 들어 갈 때, Jest는 한 번에 실패한 스냅샷 하나의 테스트로 이동하게 하고 실패한 출력을 검토할 기회를 제공할 것입니다.
 
-From here you can choose to update that snapshot or skip to the next:
+여기에서 스냅샷을 업데이트 하거나 다음으로 건너뛰는 것을 선택할 수 있습니다:
 
 ![](/jest/img/content/interactiveSnapshotUpdate.gif)
 
-Once you're finished, Jest will give you a summary before returning back to watch mode:
+완료되면, Jest는 watch 모드로 되돌아가기 전에 요약 정보를 제공할 것입니다:
 
 ![](/jest/img/content/interactiveSnapshotDone.png)
 
-### Inline Snapshots
+### 인라인 스냅샷
 
-Inline snapshots behave identically to external snapshots (`.snap` files), except the snapshot values are written automatically back into the source code. This means you can get the benefits of automatically generated snapshots without having to switch to an external file to make sure the correct value was written.
+인라인 스냅샷은 스냅 샷 값이 자동으로 소스 코드에 다시 쓰여지는 것을 제외하고, 외부 스냅샷(`.snap` 파일)과 동일하게 동작합니다. 이것은 올바른 값이 작성되도록 외부 파일로 전환할 필요 없이 자동적으로 생성되는 이접을 얻을 수 있다는 것을 의미합니다.
 
-> Inline snapshots are powered by [Prettier](https://prettier.io). To use inline snapshots you must have `prettier` installed in your project. Your Prettier configuration will be respected when writing to test files.
+> 인라인 스냅샷은 [Prettier](https://prettier.io)에 의해 구동됩니다. 인라인 스냅샷을 사용하려면 프로젝트에 `prettier`가 설치되어 있어야합니다. 테스트 파일에 작성 할 때 당신의 Prettier 구성이 준수될 것입니다.
 >
-> If you have `prettier` installed in a location where Jest can't find it, you can tell Jest how to find it using the [`"prettierPath"`](./Configuration.md#prettierpath-string) configuration property.
+> Jest가 찾을 수 없는 위치에 `prettier`가 설치된 경우, [`"prettierPath"`](./Configuration.md#prettierpath-string) 구성 속성(property)를 사용하여 Jest에게 찾는 방법을 전달 할 수 있습니다.
 
-**Example:**
+**예제:**
 
-First, you write a test, calling `.toMatchInlineSnapshot()` with no arguments:
+먼저, 인자가 없는  `.toMatchInlineSnapshot()`를 호출하는 테스트를 작성합니다.
 
 ```javascript
 it('renders correctly', () => {
@@ -116,7 +116,7 @@ it('renders correctly', () => {
 });
 ```
 
-The next time you run Jest, `tree` will be evaluated, and a snapshot will be written as an argument to `toMatchInlineSnapshot`:
+다음 Jest를 실행하면, `tree`가 평가되고, 스냅샷이 `toMatchInlineSnapshot`에 인자로 작성될 것입니다:
 
 ```javascript
 it('renders correctly', () => {
@@ -136,11 +136,11 @@ it('renders correctly', () => {
 });
 ```
 
-That's all there is to it! You can even update the snapshots with `--updateSnapshot` or using the `u` key in `--watch` mode.
+그게 다 입니다! `--updateSnapshot`나 `--watch` 모드에 `u` 키를 사용하여 스냅샷을 업데이트 할 수도 있습니다.
 
-### Property Matchers
+### 속성(property) 매처
 
-Often there are fields in the object you want to snapshot which are generated (like IDs and Dates). If you try to snapshot these objects, they will force the snapshot to fail on every run:
+종종 스냅샷 하려는 객체에 생성되는 필드가 있습니다 (ID나 Date 처럼). 이 객체들을 스냅샷하려고 하면, 실행 할 때마다 스냅샷이 강제로 실패하게 됩니다:
 
 ```javascript
 it('will fail every time', () => {
@@ -153,7 +153,7 @@ it('will fail every time', () => {
   expect(user).toMatchSnapshot();
 });
 
-// Snapshot
+// 스냅샷
 exports[`will fail every time 1`] = `
 Object {
   "createdAt": 2018-05-19T23:36:09.816Z,
@@ -163,7 +163,7 @@ Object {
 `;
 ```
 
-For these cases, Jest allows providing an asymmetric matcher for any property. These matchers are checked before the snapshot is written or tested, and then saved to the snapshot file instead of the received value:
+이 경우에, Jest는 모든 속성에 대해 비대칭 매처를 제공합니다. 이 매처는 스냅샷이 작성되거나 테스트 되기 전에 확인 되고, 이후 값을 받는 대신 스냅샷 파일로 저장됩니다:
 
 ```javascript
 it('will check the matchers and pass', () => {
@@ -179,7 +179,7 @@ it('will check the matchers and pass', () => {
   });
 });
 
-// Snapshot
+// 스냅샷
 exports[`will check the matchers and pass 1`] = `
 Object {
   "createdAt": Any<Date>,
@@ -189,7 +189,7 @@ Object {
 `;
 ```
 
-Any given value that is not a matcher will be checked exactly and saved to the snapshot:
+매처가 아닌 주어진 값은 정확하게 검사되고 스냅샷에 저장될 것입니다:
 
 ```javascript
 it('will check the values and pass', () => {
@@ -204,7 +204,7 @@ it('will check the values and pass', () => {
   });
 });
 
-// Snapshot
+// 스냅샷
 exports[`will check the values and pass 1`] = `
 Object {
   "createdAt": Any<Date>,
@@ -213,37 +213,37 @@ Object {
 `;
 ```
 
-## Best Practices
+## 모범 사례
 
-Snapshots are a fantastic tool for identifying unexpected interface changes within your application – whether that interface is an API response, UI, logs, or error messages. As with any testing strategy, there are some best-practices you should be aware of, and guidelines you should follow, in order to use them effectively.
+스냅샷은 어플리케이션에서 예기치 않은 변경을 식별하는데 환상적인 도구 입니다 - 그 인터페이스가 API 응답, UI, 로그, 에러메시지인지에 관계 없이. 다른 테스트 전략과 마찬가지로, 효과적으로 사용하기 위해 알아야 할 몇 가지 모범 사례와 따라야 할 지침들이 있습니다.
 
-### 1. Treat snapshots as code
+### 1. 스냅샷을 코드로 취급하세요
 
-Commit snapshots and review them as part of your regular code review process. This means treating snapshots as you would any other type of test or code in your project.
+스냅샷을 커밋하고 정기적인 코드 리뷰 프로세스의 일부로 검토하세요. 이것은 다른 유형의 테스트나 프로젝트의 코드로 스냅샷을 취급하는 것을 의미합니다.
 
-Ensure that your snapshots are readable by keeping them focused, short, and by using tools that enforce these stylistic conventions.
+스냅샷을 명확하고, 짧게 유지시키고 이 스타일 컨벤션을 강제하는 툴을 사용하여 읽기 쉽게 하세요.
 
-As mentioned previously, Jest uses [`pretty-format`](https://yarnpkg.com/en/package/pretty-format) to make snapshots human-readable, but you may find it useful to introduce additional tools, like [`eslint-plugin-jest`](https://yarnpkg.com/en/package/eslint-plugin-jest) with its [`no-large-snapshots`](https://github.com/jest-community/eslint-plugin-jest/blob/master/docs/rules/no-large-snapshots.md) option, or [`snapshot-diff`](https://yarnpkg.com/en/package/snapshot-diff) with its component snapshot comparison feature, to promote committing short, focused assertions.
+앞서 언급된 대로, Jest는 스냅샷을 사람이 읽을 수 있도록 [`pretty-format`](https://yarnpkg.com/en/package/pretty-format)을 사용하지만, 커밋을 짧게 고취시키고 단언에 집중할 수 있도록 [`no-large-snapshots`](https://github.com/jest-community/eslint-plugin-jest/blob/master/docs/rules/no-large-snapshots.md) 옵션을 가진 [`eslint-plugin-jest`](https://yarnpkg.com/en/package/eslint-plugin-jest)나, 컴포넌트 스냅샷 비교 기능이 있는 [`snapshot-diff`](https://yarnpkg.com/en/package/snapshot-diff) 같은 추가적인 도구들을 도입하는 것이 유용하다는 것을 발견할 수도 있습니다.
 
-The goal is to make it easy to review snapshots in pull requests, and fight against the habit of regenerating snapshots when test suites fail instead of examining the root causes of their failure.
+목표는 풀 리퀘스트에서 스냅샷을 검토하기 쉽게 하고 테스트 스위트가 실패할 때 실패의 근본적인 원인을 조사하는 대신 스냅샷을 재생성하는 습관과 싸우는 것입니다.
 
-### 2. Tests should be deterministic
+### 2. 테스트는 결정론적이어야 합니다
 
-Your tests should be deterministic. Running the same tests multiple times on a component that has not changed should produce the same results every time. You're responsible for making sure your generated snapshots do not include platform specific or other non-deterministic data.
+테스트는 결정론적이어야 합니다. 동일한 테스트를 변경되지 않은 컴포넌트에 여러 번 수행하는 것은 매 번 동일한 결과를 만들어 냅니다. 생성 된 스냅샷이 플랫폼 특성이나 다른 비결정론적 데이터를 포함하지 않도록 해야 할 책임이 있습니다.
 
-For example, if you have a [Clock](https://github.com/facebook/jest/blob/master/examples/snapshot/Clock.react.js) component that uses `Date.now()`, the snapshot generated from this component will be different every time the test case is run. In this case we can [mock the Date.now() method](MockFunctions.md) to return a consistent value every time the test is run:
+예를 들어, `Date.now()`를 사용하는 [Clock](https://github.com/facebook/jest/blob/master/examples/snapshot/Clock.react.js) 컴포넌트가 있다면, 이 컴포넌트로부터 생성 된 스냅샷은 테스트 케이스가 수행될 때마다 달라질 것입니다. 이 경우에 테스트가 수행될 때마다 일관된 값을 반환하도록 [Date.now() 메서드를 모의](MockFunctions.md) 할 수 있습니다:
 
 ```js
 Date.now = jest.fn(() => 1482363367071);
 ```
 
-Now, every time the snapshot test case runs, `Date.now()` will return `1482363367071` consistently. This will result in the same snapshot being generated for this component regardless of when the test is run.
+이제, 테스트 케이스가 수행될 때마다, `Date.now()` 는 일관되게 `1482363367071`를 반환할 것입니다. 이는 테스트가 수행되는 때와 상관 없이 이 컴포넌트에 대해 동일한 스냅샷의 결과를 생성되게 할 것입니다.
 
-### 3. Use descriptive snapshot names
+### 3. 서술적인 스냅샷 이름을 사용하세요
 
-Always strive to use descriptive test and/or snapshot names for snapshots. The best names describe the expected snapshot content. This makes it easier for reviewers to verify the snapshots during review, and for anyone to know whether or not an outdated snapshot is the correct behavior before updating.
+항상 스냅샷에 대해 서술적인 테스트나 스냅샷 이름을 사용하도록 노력하세요. 가장 좋은 이름은 예상되는 스냅샷 컨텐츠를 설명합니다. 이것은 검토자가 검토하는 동안 스냅샷을 확인하는 것을 쉽게 하고, 오래된 스냅샷이 업데이트 전에 올바르게 동작하는지의 여부를 누구나 알기 쉽게 합니다.
 
-For example, compare:
+예를 들어 비교해보세요:
 
 ```js
 exports[`<UserName /> should handle some test case`] = `null`;
@@ -255,7 +255,7 @@ exports[`<UserName /> should handle some other test case`] = `
 `;
 ```
 
-To:
+이를 다음으로:
 
 ```js
 exports[`<UserName /> should render null`] = `null`;
@@ -267,7 +267,7 @@ exports[`<UserName /> should render Alan Turing`] = `
 `;
 ```
 
-Since the later describes exactly what's expected in the output, it's more clear to see when it's wrong:
+후자는 출력에서 예상되는 것이 무엇인지를 정확히 설명하기 때문에, 잘못되었을 경우 더 보기에 명확합니다:
 
 ```js
 exports[`<UserName /> should render null`] = `
@@ -279,40 +279,40 @@ exports[`<UserName /> should render null`] = `
 exports[`<UserName /> should render Alan Turing`] = `null`;
 ```
 
-## Frequently Asked Questions
+## 자주 묻는 질문과 답변
 
-### Are snapshots written automatically on Continuous Integration (CI) systems?
+### 지속적 통합 (CI) 시스템에서 자동으로 스냅샷이 작성 되나요?
 
-No, as of Jest 20, snapshots in Jest are not automatically written when Jest is run in a CI system without explicitly passing `--updateSnapshot`. It is expected that all snapshots are part of the code that is run on CI and since new snapshots automatically pass, they should not pass a test run on a CI system. It is recommended to always commit all snapshots and to keep them in version control.
+아뇨, Jest 20 버전부터, Jest가 명시적으로 `--updateSnapshot`를 전달하지 않고 CI 시스템에서 수행 되는 경우 스냅샷은 자동으로 작성되지 않습니다. 모든 스냅샷이 CI에서 수행되는 코드의 일부로 예상되고 새로운 스냅샷이 자동으로 전달되기 때문에, CI 시스템에서 테스트 수행을 통과하지 않아야 합니다. 항상 모든 스냅샷을 커밋하고 버전 관리를 유지하는 것이 권장됩니다.
 
-### Should snapshot files be committed?
+### 스냅샷 파일은 커밋되어야 하나요?
 
-Yes, all snapshot files should be committed alongside the modules they are covering and their tests. They should be considered part of a test, similar to the value of any other assertion in Jest. In fact, snapshots represent the state of the source modules at any given point in time. In this way, when the source modules are modified, Jest can tell what changed from the previous version. It can also provide a lot of additional context during code review in which reviewers can study your changes better.
+네, 모든 스냅샷 파일이 다루는 모듈 및 테스트와 함께 커밋 되어야 합니다. 그것들은 Jest에서 다른 단언 값과 유사하게 테스트의 일부로 간주되어야 합니다. 실제로 스냅샷은 주어진 시점의 소스 모듈의 상태를 나타냅니다. 이 방법으로, 소스 모듈이 수정되는 경우, Jest는 이전 버전에서 무엇이 변경되었는지를 알려줄 수 있습니다. 또한 검토자들이 코드 검토 동안 변경을 더 잘 연구할 수 있는 많은 추가적인 맥락을 제공할 수 있습니다.
 
-### Does snapshot testing only work with React components?
+### 스냅샷 테스트는 React 컴포넌트에서만 동작하나요?
 
-[React](TutorialReact.md) and [React Native](TutorialReactNative.md) components are a good use case for snapshot testing. However, snapshots can capture any serializable value and should be used anytime the goal is testing whether the output is correct. The Jest repository contains many examples of testing the output of Jest itself, the output of Jest's assertion library as well as log messages from various parts of the Jest codebase. See an example of [snapshotting CLI output](https://github.com/facebook/jest/blob/master/e2e/__tests__/console.test.ts) in the Jest repo.
+[React](TutorialReact.md)와 [React Native](TutorialReactNative.md) 컴포넌트는 스냅샷 테스트에 대한 좋은 사용예입니다. 하지만, 스냅샷은 모든 직렬화 값을 캡쳐 할 수 있어야 하고 결과물이 올바른지를 테스트 하는 모든 목적에 대해 언제든지 사용되어야 합니다. Jest 저장소는 Jest 자체의 많은 테스팅 결과 예제, Jest 코드베이스의 여러 부분에서의 로그 메세지들 뿐만 아니라 Jest의 단언 라이브러리 출력물을 포함합니다. Jest 저장소에서 [CLI 출력 스냅샷하기](https://github.com/facebook/jest/blob/master/e2e/__tests__/console.test.ts)의 예제를 참고하세요
 
-### What's the difference between snapshot testing and visual regression testing?
+### 스냅샷 테스트와 시각적 회귀 테스트의 차이는 무엇인가요?
 
-Snapshot testing and visual regression testing are two distinct ways of testing UIs, and they serve different purposes. Visual regression testing tools take screenshots of web pages and compare the resulting images pixel by pixel. With Snapshot testing values are serialized, stored within text files, and compared using a diff algorithm. There are different trade-offs to consider and we listed the reasons why snapshot testing was built in the [Jest blog](https://jestjs.io/blog/2016/07/27/jest-14.html#why-snapshot-testing).
+스냅샷 테스트와 시각적 회귀 테스트은 UI를 테스트 하는 두 가지 별개의 방법이며, 서로 다른 목적을 제공합니다. 시각적 회귀 테스트 도구는 웹 페이지의 스크린샷과 결과 이미지를 한 픽셀씩 비교합니다. 스냅샷 테스트를 통해 값이 직렬화되고 텍스트 파일로 저장되어 비교 알고리즘을 사용하여 비교됩니다. 고려 되어야 할 서로 다른 절충점이 있으며 스냅샷 테스트가 내장된 이유를 [Jest 블로그](https://jestjs.io/blog/2016/07/27/jest-14.html#why-snapshot-testing)에 기록해 두었습니다.
 
-### Does snapshot testing replace unit testing?
+### 스냅샷 테스트가 유닛 테스트를 대체하나요?
 
-Snapshot testing is only one of more than 20 assertions that ship with Jest. The aim of snapshot testing is not to replace existing unit tests, but to provide additional value and make testing painless. In some scenarios, snapshot testing can potentially remove the need for unit testing for a particular set of functionalities (e.g. React components), but they can work together as well.
+스냅샷 테스트는 Jest와 제공되는 20 가지를 넘는 단언들 중 하나입니다. 스냅샷 테스트의 목표는 기존 유닛 테스트를 대체하는 것이 아니라, 추가적인 가치를 제공하고 테스트를 괴롭지 않게 하는 것입니다. 일부 시나리오에서 스냅샷 테스트는 특정 기능 세트(예를 들어 React 컴포논트)에 대한 유닛 테스트의 필요성을 제거할 수도 있지만, 함께 동작 할 수도 있습니다.
 
-### What is the performance of snapshot testing regarding speed and size of the generated files?
+### 속도와 생성된 파일의 크기에 대한 스냅샷 테스트의 성능은 어떤가요?
 
-Jest has been rewritten with performance in mind, and snapshot testing is not an exception. Since snapshots are stored within text files, this way of testing is fast and reliable. Jest generates a new file for each test file that invokes the `toMatchSnapshot` matcher. The size of the snapshots is pretty small: For reference, the size of all snapshot files in the Jest codebase itself is less than 300 KB.
+Jest는 성능을 고려하여 재작성 되었고, 스냅샷 테스트도 예외는 아닙니다. 스냅샷은 텍스트 파일로 저장되므로, 이 테스트 방법은 빠르고 안정적입니다. Jest는 `toMatchSnapshot` 매처를 호출하는 각 테스트 파일에 대한 새로운 파일을 생성합니다. 스냅샷의 크기는 매우 작습니다: 참고로, Jest 코드베이스의 모든 스냅샷 파일의 크기는 300KB보다 작습니다.
 
-### How do I resolve conflicts within snapshot files?
+### 스냅샷 파일에서 충돌을 어떻게 해결하나요?
 
-Snapshot files must always represent the current state of the modules they are covering. Therefore, if you are merging two branches and encounter a conflict in the snapshot files, you can either resolve the conflict manually or update the snapshot file by running Jest and inspecting the result.
+스냅샷 파일은 항상 그것이 다루는 모듈의 현재 상태를 나타내야 합니다. 따라서, 두 브랜치를 병합하고 스냅샷 파일에서 충돌이 발생하면, 수동으로 충돌을 해결하거나 Jest를 실행하고 결과를 검사하여 스냅샷 파일을 업데이트 할 수 있습니다.
 
-### Is it possible to apply test-driven development principles with snapshot testing?
+### 스냅샷 테스트로 테스트 주도 개발 원칙을 적용할 수 있습니까?
 
-Although it is possible to write snapshot files manually, that is usually not approachable. Snapshots help to figure out whether the output of the modules covered by tests is changed, rather than giving guidance to design the code in the first place.
+스냅샷 파일을 수동으로 작성할 수 있기는 하지만, 그건 일반적으로 쉽지 않습니다. 스냅샷은 처음에 코드를 설계하는 지침을 제공하는 것 보다는 테스트에 의해 다루어진 모듈의 출력이 변경되는지를 이해하는데 도움이 됩니다.
 
-### Does code coverage work with snapshot testing?
+### 코드 적용 범위가 스냅샷 테스트와 함께 동작하나요?
 
-Yes, as well as with any other test.
+네, 다른 테스트와 마찬가지입니다.
