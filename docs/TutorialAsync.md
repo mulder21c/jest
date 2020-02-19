@@ -1,11 +1,11 @@
 ---
 id: tutorial-async
-title: An Async Example
+title: 비동기 예제
 ---
 
-First, enable Babel support in Jest as documented in the [Getting Started](GettingStarted.md#using-babel) guide.
+먼저, [Getting Started](GettingStarted.md#using-babel) 가이드의 내용을 따라 Jest에 Babel 지원을 활성화하세요.
 
-Let's implement a module that fetches user data from an API and returns the user name.
+API에서 사용자 데이터를 가져오고 사용자 이름을 반환하는 모듈을 구현해 봅시다.
 
 ```js
 // user.js
@@ -16,9 +16,9 @@ export function getUserName(userID) {
 }
 ```
 
-In the above implementation we expect the `request.js` module to return a promise. We chain a call to `then` to receive the user name.
+위 구현에서 `request.js` 모듈이 프로미스를 반환할 것으로 기대합니다. 사용자 이름을 받기 위해 `then`을 호출하도록 연결합니다.
 
-Now imagine an implementation of `request.js` that goes to the network and fetches some user data:
+이제 네트워크에 접근하여 사용자 데이터를 가져오는 `request.js`의 구현을 상상해보세요:
 
 ```js
 // request.js
@@ -26,9 +26,9 @@ const http = require('http');
 
 export default function request(url) {
   return new Promise(resolve => {
-    // This is an example of an http request, for example to fetch
-    // user data from an API.
-    // This module is being mocked in __mocks__/request.js
+    // 이것이 API로부터 사용자 데이터를 가져오는 예에 대한
+    // HTTP 요청의 예입니다.
+    // 이 모듈은 __mocks__/request.js에 모의 되고 있습니다
     http.get({path: url}, response => {
       let data = '';
       response.on('data', _data => (data += _data));
@@ -38,7 +38,7 @@ export default function request(url) {
 }
 ```
 
-Because we don't want to go to the network in our test, we are going to create a manual mock for our `request.js` module in the `__mocks__` folder (the folder is case-sensitive, `__MOCKS__` will not work). It could look something like this:
+테스트를 위해서 네트워크에 접근하는 것은 원치 않기 때문에, `__mocks__` 폴더에 `request.js` 모듈에 대한 수동 모의를 만들 것입니다 (폴더는 대소문자를 구분하며, `__MOCKS__`은 동작하지 않을 것입니다). 이것은 다음과 같이 보일 수 있습니다:
 
 ```js
 // __mocks__/request.js
@@ -61,7 +61,7 @@ export default function request(url) {
 }
 ```
 
-Now let's write a test for our async functionality.
+이제 비동기 기능에 대한 테스트를 작성해봅시다.
 
 ```js
 // __tests__/user-test.js
@@ -69,18 +69,18 @@ jest.mock('../request');
 
 import * as user from '../user';
 
-// The assertion for a promise must be returned.
+// 프로미스에 대한 단언이 반환되어야 합니다.
 it('works with promises', () => {
   expect.assertions(1);
   return user.getUserName(4).then(data => expect(data).toEqual('Mark'));
 });
 ```
 
-We call `jest.mock('../request')` to tell Jest to use our manual mock. `it` expects the return value to be a Promise that is going to be resolved. You can chain as many Promises as you like and call `expect` at any time, as long as you return a Promise at the end.
+Jest에게 수동 모의를 사용하도록 요청하는 `jest.mock('../request')`을 호출합니다. `it`는 리졸브 될 프로미스가 되는 값을 반환한 것으로 기대합니다. 마지막에 프로미스를 반환하기만 하면 원하는 만큼 많은 프로미스를 연결하고 언제든지 `expect`를 호출 할 수 있습니다.
 
 ## `.resolves`
 
-There is a less verbose way using `resolves` to unwrap the value of a fulfilled promise together with any other matcher. If the promise is rejected, the assertion will fail.
+다른 매처와 함께 수행된 프로미스의 값을 펼치기 위해 `resolves`를 사용하는 덜 장황한 방법이 있습니다. 프로미스가 거부된다면, 단언은 실패할 것입니다.
 
 ```js
 it('works with resolves', () => {
@@ -91,31 +91,31 @@ it('works with resolves', () => {
 
 ## `async`/`await`
 
-Writing tests using the `async`/`await` syntax is also possible. Here is how you'd write the same examples from before:
+`async`/`await`를 사용하여 테스트를 작성하는 것도 가능합니다. 이전의 동일한 예제를 작성하는 방법은 다음과 같습니다:
 
 ```js
-// async/await can be used.
+// async/await가 사용될 수 있습니다.
 it('works with async/await', async () => {
   expect.assertions(1);
   const data = await user.getUserName(4);
   expect(data).toEqual('Mark');
 });
 
-// async/await can also be used with `.resolves`.
+// async/await는 또한 `.resolves`와 함께 사용될 수 있습니다.
 it('works with async/await and resolves', async () => {
   expect.assertions(1);
   await expect(user.getUserName(5)).resolves.toEqual('Paul');
 });
 ```
 
-To enable async/await in your project, install [`@babel/preset-env`](https://babeljs.io/docs/en/babel-preset-env) and enable the feature in your `babel.config.js` file.
+프로젝트에 async/await를 활성화 하기 위해, [`@babel/preset-env`](https://babeljs.io/docs/en/babel-preset-env)을 설치하고 `babel.config.js` 파일에 기능을 활성화 시키세요.
 
-## Error handling
+## 오류 처리
 
-Errors can be handled using the `.catch` method. Make sure to add `expect.assertions` to verify that a certain number of assertions are called. Otherwise a fulfilled promise would not fail the test:
+오류는 `.catch` 메서드를 사용하여 처리될 수 있습니다. 특정 번호의 단언이 호출되는지를 확인하도록 `expect.assertions`을 추가하세요. 그렇지 않으면 수행된 프로미스는 테스트를 실패하지 않을 것입니다:
 
 ```js
-// Testing for async errors using Promise.catch.
+// Promise.catch를 사용하여 비동기 오류 테스트하기.
 it('tests error with promises', () => {
   expect.assertions(1);
   return user.getUserName(2).catch(e =>
@@ -125,7 +125,7 @@ it('tests error with promises', () => {
   );
 });
 
-// Or using async/await.
+// 또는 async/await 사용.
 it('tests error with async/await', async () => {
   expect.assertions(1);
   try {
@@ -140,10 +140,10 @@ it('tests error with async/await', async () => {
 
 ## `.rejects`
 
-The`.rejects` helper works like the `.resolves` helper. If the promise is fulfilled, the test will automatically fail. `expect.assertions(number)` is not required but recommended to verify that a certain number of [assertions](https://jestjs.io/docs/en/expect#expectassertionsnumber) are called during a test. It is otherwise easy to forget to `return`/`await` the `.resolves` assertions.
+`.rejects` 헬퍼는 `.resolves` 헬퍼 처럼 동작합니다. 프로미스가 수행되면, 테스트는 자동으로 실패할 것입니다. `expect.assertions(number)`가 필수는 아니지만, 테스트 동안 호출되는 특정 번호의 [assertions](https://jestjs.io/docs/en/expect#expectassertionsnumber)을 확인 하기 위해 권장됩니다. 그렇지 않으면 `.resolves` 단언을 `return`/`await` 하는 것을 잊어버리기 쉽습니다.
 
 ```js
-// Testing for async errors using `.rejects`.
+// `.rejects`를 사용하여 비동기 오류 테스트 하기.
 it('tests error with rejects', () => {
   expect.assertions(1);
   return expect(user.getUserName(3)).rejects.toEqual({
@@ -151,7 +151,7 @@ it('tests error with rejects', () => {
   });
 });
 
-// Or using async/await with `.rejects`.
+// 또는 `.rejects`와 함께 async/await 사용.
 it('tests error with async/await and rejects', async () => {
   expect.assertions(1);
   await expect(user.getUserName(3)).rejects.toEqual({
@@ -160,6 +160,6 @@ it('tests error with async/await and rejects', async () => {
 });
 ```
 
-The code for this example is available at [examples/async](https://github.com/facebook/jest/tree/master/examples/async).
+이 예제의 코드는 [examples/async](https://github.com/facebook/jest/tree/master/examples/async)에서 사용 가능 합니다.
 
-If you'd like to test timers, like `setTimeout`, take a look at the [Timer mocks](TimerMocks.md) documentation.
+`setTimeout` 같은 타이머를 테스트하고 싶다면, [타이머 모의](TimerMocks.md) 문서를 살펴보세요.

@@ -1,9 +1,9 @@
 ---
 id: timer-mocks
-title: Timer Mocks
+title: 타이머 모의
 ---
 
-The native timer functions (i.e., `setTimeout`, `setInterval`, `clearTimeout`, `clearInterval`) are less than ideal for a testing environment since they depend on real time to elapse. Jest can swap out timers with functions that allow you to control the passage of time. [Great Scott!](https://www.youtube.com/watch?v=QZoJ2Pt27BY)
+네이티브 타이머 함수(예를 들어,  `setTimeout`, `setInterval`, `clearTimeout`, `clearInterval`)는 실시간 경과에 의존되기 때문에 테스트 환경에 이상적이지 않습니다. Jest는 시간의 흐름을 제어할 수 있는 함수로 타이머를 교체할 수 있습니다. [이럴 수가!](https://www.youtube.com/watch?v=QZoJ2Pt27BY)
 
 ```javascript
 // timerGame.js
@@ -35,11 +35,11 @@ test('waits 1 second before ending the game', () => {
 });
 ```
 
-Here we enable fake timers by calling `jest.useFakeTimers();`. This mocks out setTimeout and other timer functions with mock functions. If running multiple tests inside of one file or describe block, `jest.useFakeTimers();` can be called before each test manually or with a setup function such as `beforeEach`. Not doing so will result in the internal usage counter not being reset.
+여기에서 `jest.useFakeTimers();`를 호출하여 페이크 타이머를 활성화 합니다. 이것은 setTimeout과 다른 타이머 함수를 모의 함수로 대체합니다. 하나의 파일 또는 describe 블럭 안에서 여러 테스트가 수행하는 경우, `jest.useFakeTimers();`는 수동으로 또는 `beforeEach` 같은 설정 기능을 사용하여 각 테스트 전에 호출 될 수 있습니다. 그렇게 하지 않으면 내부 사용 카운터가 재설정 되지 않을 것입니다.
 
-## Run All Timers
+## 모든 타이머 실행
 
-Another test we might want to write for this module is one that asserts that the callback is called after 1 second. To do this, we're going to use Jest's timer control APIs to fast-forward time right in the middle of the test:
+이 모듈에 대해 재작성하기 원할 수 있는 다른 테스트는 1초 후에 콜백이 호출되도록 하는 단언입니다. 이를 위해, 테스트 중간에 시간을 빨기 감기 위한 Jest의 타이머 제어 API를 사용할 것입니다:
 
 ```javascript
 test('calls the callback after 1 second', () => {
@@ -48,21 +48,21 @@ test('calls the callback after 1 second', () => {
 
   timerGame(callback);
 
-  // At this point in time, the callback should not have been called yet
+  // 이 시점에는, 콜백은 아직 호출되지 않아야 합니다
   expect(callback).not.toBeCalled();
 
-  // Fast-forward until all timers have been executed
+  // 모든 타이머가 실행될때까지 빨리감기
   jest.runAllTimers();
 
-  // Now our callback should have been called!
+  // 이제 콜백이 호출되어야합니다!
   expect(callback).toBeCalled();
   expect(callback).toHaveBeenCalledTimes(1);
 });
 ```
 
-## Run Pending Timers
+## 대기 타이머 실행
 
-There are also scenarios where you might have a recursive timer -- that is a timer that sets a new timer in its own callback. For these, running all the timers would be an endless loop… so something like `jest.runAllTimers()` is not desirable. For these cases you might use `jest.runOnlyPendingTimers()`:
+재귀 타이머가 있을 수 있는 시나리오도 있습니다 -- 자체 콜백에서 새로운 타이머가 설정되는 타이머 입니다. 이를 위해, 모든 타이머를 실행하는 것은 무한 루프가 될 수 있... 따라서 `jest.runAllTimers()` 같은 것은 바람직하지 않습니다. 이 경우 `jest.runOnlyPendingTimers()`를 사용할 수 있습니다:
 
 ```javascript
 // infiniteTimerGame.js
@@ -75,7 +75,7 @@ function infiniteTimerGame(callback) {
     console.log("Time's up! 10 seconds before the next game starts...");
     callback && callback();
 
-    // Schedule the next game in 10 seconds
+    // 10초 안에 다음 게임이 예정됩니다
     setTimeout(() => {
       infiniteTimerGame(callback);
     }, 10000);
@@ -98,31 +98,31 @@ describe('infiniteTimerGame', () => {
 
     infiniteTimerGame(callback);
 
-    // At this point in time, there should have been a single call to
-    // setTimeout to schedule the end of the game in 1 second.
+    // 이 시점에, 1초 안에 게임 종료 일정을 잡기 위한
+    // setTimeout에 대해 단일 호출이 있어야 합니다.
     expect(setTimeout).toHaveBeenCalledTimes(1);
     expect(setTimeout).toHaveBeenLastCalledWith(expect.any(Function), 1000);
 
-    // Fast forward and exhaust only currently pending timers
-    // (but not any new timers that get created during that process)
+    // 현재 대기 타이머만 빨리감아 고갈시킵니다
+    // (그 프로세스 동안 생성되는 새로운 타이머는 없습니다)
     jest.runOnlyPendingTimers();
 
-    // At this point, our 1-second timer should have fired it's callback
+    // 이 시점에, 1초 타이머가 콜백을 발생시켜야 합니다
     expect(callback).toBeCalled();
 
-    // And it should have created a new timer to start the game over in
-    // 10 seconds
+    // 그리고 10초 안에 게임을 시작할 수 있는 새로운 타이머가
+    // 생성되어야 합니다
     expect(setTimeout).toHaveBeenCalledTimes(2);
     expect(setTimeout).toHaveBeenLastCalledWith(expect.any(Function), 10000);
   });
 });
 ```
 
-## Advance Timers by Time
+## 시간별 진행 타이머
 
-##### renamed from `runTimersToTime` to `advanceTimersByTime` in Jest **22.0.0**
+##### Jest **22.0.0**에서 `runTimersToTime`에서 `advanceTimersByTime`로 이름이 변경되었습니다
 
-Another possibility is use `jest.advanceTimersByTime(msToRun)`. When this API is called, all timers are advanced by `msToRun` milliseconds. All pending "macro-tasks" that have been queued via setTimeout() or setInterval(), and would be executed during this time frame, will be executed. Additionally if those macro-tasks schedule new macro-tasks that would be executed within the same time frame, those will be executed until there are no more macro-tasks remaining in the queue that should be run within msToRun milliseconds.
+또 다른 가능성은 `jest.advanceTimersByTime(msToRun)`의 사용입니다. 이 API가 호출 될 경우, 모든 타이머는 `msToRun` 밀리초씩 진행됩니다. setTimeout()이나 setInterval()을 통해 대기되고 이 시간 프레임 동안 실행되어야 하는 모든 대기 중인 "macro-tasks"가 실행될 것입니다. 추가적으로 그 마이크로 태스트가 동일한 시간 프레임에 실행되어야 하는 새로운 마이크로 태스크를 예약하는 경우, msToRun 밀리초 내에 실행되어야 하는 대기열 내의 마이크로 태스크가 더 이상 없을 때 까지 실행될 것입니다.
 
 ```javascript
 // timerGame.js
@@ -146,18 +146,18 @@ it('calls the callback after 1 second via advanceTimersByTime', () => {
 
   timerGame(callback);
 
-  // At this point in time, the callback should not have been called yet
+  // 이 시점에, 콜백은 아직 호출되지 않아야 합니다
   expect(callback).not.toBeCalled();
 
-  // Fast-forward until all timers have been executed
+  // 모든 타이머가 실행될때까지 빨기감기
   jest.advanceTimersByTime(1000);
 
-  // Now our callback should have been called!
+  // 이제 콜백이 호출 되어야 합니다!
   expect(callback).toBeCalled();
   expect(callback).toHaveBeenCalledTimes(1);
 });
 ```
 
-Lastly, it may occasionally be useful in some tests to be able to clear all of the pending timers. For this, we have `jest.clearAllTimers()`.
+마지막으로, 가끔 일부 테스트에는 모든 대기 중인 타이머를 지울 수 있는 것이 유용할 수 있습니다. 이를 위해 `jest.clearAllTimers()`이 있습니다.
 
-The code for this example is available at [examples/timer](https://github.com/facebook/jest/tree/master/examples/timer).
+이 예에 대한 코드는  [examples/timer](https://github.com/facebook/jest/tree/master/examples/timer)에서 사용 가능합니다.
