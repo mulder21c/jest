@@ -1,23 +1,23 @@
 ---
 id: manual-mocks
-title: Manual Mocks
+title: 수동 모의
 ---
 
-Manual mocks are used to stub out functionality with mock data. For example, instead of accessing a remote resource like a website or a database, you might want to create a manual mock that allows you to use fake data. This ensures your tests will be fast and not flaky.
+수동 모의는 모의 데이터를 기능적으로 추출하는데 사용됩니다. 예를 들어, 웹사이트나 데이터베이스 같은 원격 리소스에 접근하는 대신 가짜 데이터를 사용하도록 수동 모의를 생성하기를 원할 수 있습니다. 이것은 테스트를 빠르고 고장이 많지 않게 합니다.
 
-## Mocking user modules
+## 사용자 모듈 모의하기
 
-Manual mocks are defined by writing a module in a `__mocks__/` subdirectory immediately adjacent to the module. For example, to mock a module called `user` in the `models` directory, create a file called `user.js` and put it in the `models/__mocks__` directory. Note that the `__mocks__` folder is case-sensitive, so naming the directory `__MOCKS__` will break on some systems.
+수동 모의는 모듈 바로 옆 `__mocks__/` 서브디렉토리에 작성하여 정의됩니다. 예를 들어, `models` 디렉토리 내의 `user` 라는 모듈을 모의하려면, `user.js` 라는 파일을 생성하여 `models/__mocks__` 디렉토리에 넣으세요. `__mocks__` 폴더가 대소문자를 구별하기 때문에, 디렉토리를 `__MOCKS__` 으로 이름을 짓는 것은 일부 시스템에서는 깨진다는 것에 주의하세요.
 
-> When we require that module in our tests, explicitly calling `jest.mock('./moduleName')` is **required**.
+> 테스트에 그 모듈이 필요한 경우, 명시적으로 `jest.mock('./moduleName')`를 호출하는 것이 **필요합니다**.
 
-## Mocking Node modules
+## Node 모듈 모의하기
 
-If the module you are mocking is a Node module (e.g.: `lodash`), the mock should be placed in the `__mocks__` directory adjacent to `node_modules` (unless you configured [`roots`](Configuration.md#roots-arraystring) to point to a folder other than the project root) and will be **automatically** mocked. There's no need to explicitly call `jest.mock('module_name')`.
+모의하는 모듈이 Node 모듈인 경우 (예를 들어: `lodash`), 모의는 (프로젝트 루트가 아닌 폴더를 가리키도록 [`roots`](Configuration.md#roots-arraystring)를 설정하지 않은 한) `node_modules`에 인접한 `__mocks__` 디렉토리에 위치해야 하고 **자동으로** 모의될 것입니다. 명시적으로 `jest.mock('module_name')`를 호출 할 필요는 없습니다.
 
-Scoped modules can be mocked by creating a file in a directory structure that matches the name of the scoped module. For example, to mock a scoped module called `@scope/project-name`, create a file at `__mocks__/@scope/project-name.js`, creating the `@scope/` directory accordingly.
+범위가 지정된 모듈은 범위가 지정된 모듈의 이름과 일치하는 디렉토리 구조에 파일을 생성하여 모의될 수 있습니다. 예를 들어, `@scope/project-name`라는 범위가 지정된 모듈을 모의하려면, `@scope/` 디렉토리에 맞춰 생성하여 `__mocks__/@scope/project-name.js`에 파일을 생성하세요.
 
-> Warning: If we want to mock Node's core modules (e.g.: `fs` or `path`), then explicitly calling e.g. `jest.mock('path')` is **required**, because core Node modules are not mocked by default.
+> 주의: Node의 코어 모듈을 (예를 들어: `fs`나 `path`) 모의하려면,  명시적으로 호출 하는 것 예를 들어 코어 Node 모듈은 기본적으로 모의되지 않기 때문에 `jest.mock('path')`이 **필수**입니다.
 
 ## Examples
 
@@ -34,11 +34,11 @@ Scoped modules can be mocked by creating a file in a directory structure that ma
 └── views
 ```
 
-When a manual mock exists for a given module, Jest's module system will use that module when explicitly calling `jest.mock('moduleName')`. However, when `automock` is set to `true`, the manual mock implementation will be used instead of the automatically created mock, even if `jest.mock('moduleName')` is not called. To opt out of this behavior you will need to explicitly call `jest.unmock('moduleName')` in tests that should use the actual module implementation.
+수동 모의가 주어진 모듈에 대해 존재하는 경우, Jest의 모듈 시스템은 명시적으로 `jest.mock('moduleName')`를 호출할 때 그 모듈을 사용합니다. 하지만, `automock`이 `true`로 설정된 경우, `jest.mock('moduleName')`가 호출되지 않는다하더라도, 수동 모의 구현이 자동으로 생성된 모의 대신 사용될 것입니다. 이 동작에서 손을 떼려면 실제 모듈 구현을 사용해야 하는 테스트에서 `jest.unmock('moduleName')`를 명시적으로 호출해야 할 것입니다.
 
-> Note: In order to mock properly, Jest needs `jest.mock('moduleName')` to be in the same scope as the `require/import` statement.
+> 참고: 적절한 모의를 위해, Jest는 `require/import` 구문과 동일한 범위에 있으려면 `jest.mock('moduleName')`이 필요합니다.
 
-Here's a contrived example where we have a module that provides a summary of all the files in a given directory. In this case we use the core (built in) `fs` module.
+다음은 주어진 디렉터리의 모든 파일의 요약을 제공하는 모듈이 있는 인위적인 예입니다. 이 경우 코어(내장) `fs` 모듈을 사용합니다.
 
 ```javascript
 // FileSummarizer.js
@@ -56,7 +56,7 @@ function summarizeFilesInDirectorySync(directory) {
 exports.summarizeFilesInDirectorySync = summarizeFilesInDirectorySync;
 ```
 
-Since we'd like our tests to avoid actually hitting the disk (that's pretty slow and fragile), we create a manual mock for the `fs` module by extending an automatic mock. Our manual mock will implement custom versions of the `fs` APIs that we can build on for our tests:
+테스트가 실제로 디스크에 타격을 주는 것을 (꽤 느려지고 깨지기 쉽습니다) 방지하고자 하기 때문에, 자동 모의를 확장하여 `fs` 모듈에 대한 수동 모의를 생성합니다. 수동 모의는 테스트를 기반으로하는 `fs` API의 사용자 정의 버전을 구현할 것입니다:
 
 ```javascript
 // __mocks__/fs.js
@@ -66,9 +66,9 @@ const path = require('path');
 
 const fs = jest.genMockFromModule('fs');
 
-// This is a custom function that our tests can use during setup to specify
-// what the files on the "mock" filesystem should look like when any of the
-// `fs` APIs are used.
+// 이것은 "mock" 파일시스템에서 파일이 `fs` API가 사용될 때
+// 무엇처렴 보여야 하는지를 명시하기 위해
+// 설정 중에 사용할 수 있는 사용자 정의 함수입니다.
 let mockFiles = Object.create(null);
 function __setMockFiles(newMockFiles) {
   mockFiles = Object.create(null);
@@ -82,8 +82,9 @@ function __setMockFiles(newMockFiles) {
   }
 }
 
-// A custom version of `readdirSync` that reads from the special mocked out
-// file list set via __setMockFiles
+// __setMockFiles를 통해 설정된
+// 특정 모의 파일 리스트로부터 읽는
+// `readdirSync`의 사용자 정의 버전
 function readdirSync(directoryPath) {
   return mockFiles[directoryPath] || [];
 }
@@ -94,7 +95,7 @@ fs.readdirSync = readdirSync;
 module.exports = fs;
 ```
 
-Now we write our test. Note that we need to explicitly tell that we want to mock the `fs` module because it’s a core Node module:
+이제 테스트를 작성합니다. 코어 Node 모듈이기 때문에 `fs` 모듈을 모의하기를 원한다고 명시적으로 전달할 필요가 있음에 주목하세요:
 
 ```javascript
 // __tests__/FileSummarizer-test.js
@@ -109,7 +110,7 @@ describe('listFilesInDirectorySync', () => {
   };
 
   beforeEach(() => {
-    // Set up some mocked out file info before each test
+    // 각 테스트 전에 모의 파일 정보를 설정하세요
     require('fs').__setMockFiles(MOCK_FILE_INFO);
   });
 
@@ -124,21 +125,21 @@ describe('listFilesInDirectorySync', () => {
 });
 ```
 
-The example mock shown here uses [`jest.genMockFromModule`](JestObjectAPI.md#jestgenmockfrommodulemodulename) to generate an automatic mock, and overrides its default behavior. This is the recommended approach, but is completely optional. If you do not want to use the automatic mock at all, you can export your own functions from the mock file. One downside to fully manual mocks is that they're manual – meaning you have to manually update them any time the module they are mocking changes. Because of this, it's best to use or extend the automatic mock when it works for your needs.
+여기서 예시 모의는 자동 모의를 생성하기 위해 [`jest.genMockFromModule`](JestObjectAPI.md#jestgenmockfrommodulemodulename)를 사용하고, 기본 동작을 오버라이드 합니다. 이는 권장되는 접근 방법이지만, 온전히 선택적입니다. 자동 모의를 전혀 사용하지 않으려면, 모의 파일로부터 자체 함수를 내보낼 수 있습니다. 완전 수동 모의에 대한 한 가지 단점은 그것이 수동이라는 것입니다 - 즉, 변경 사항을 모의하는 모듈이 있을 때 마다 수동으로 업데이트 해야 합니다. 이 때문에, 필요에 따라 자동 모의를 사용하거나 확장하는 것이 가장 좋습니다.
 
-To ensure that a manual mock and its real implementation stay in sync, it might be useful to require the real module using [`jest.requireActual(moduleName)`](JestObjectAPI.md#jestrequireactualmodulename) in your manual mock and amending it with mock functions before exporting it.
+수동 모의와 그것의 실제 구현이 동기화 상태를 이루도록, 수동 모의에 [`jest.requireActual(moduleName)`](JestObjectAPI.md#jestrequireactualmodulename)을 사용하고 그것을 내보내기 전에 모의 함수로 갱신하여 실제 모듈을 요구하는 것이 유용할 수 있습니다.
 
-The code for this example is available at [examples/manual-mocks](https://github.com/facebook/jest/tree/master/examples/manual-mocks).
+이 예제 코드는 [examples/manual-mocks](https://github.com/facebook/jest/tree/master/examples/manual-mocks)에서 사용 가능 합니다.
 
-## Using with ES module imports
+## ES 모듈 imports 사용하기
 
-If you're using [ES module imports](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/import) then you'll normally be inclined to put your `import` statements at the top of the test file. But often you need to instruct Jest to use a mock before modules use it. For this reason, Jest will automatically hoist `jest.mock` calls to the top of the module (before any imports). To learn more about this and see it in action, see [this repo](https://github.com/kentcdodds/how-jest-mocking-works).
+[ES 모듈 imports](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/import)을 사용하고 있다면, 일반적으로 테스트 파일의 최 상위에 `import` 구문을 두는 경향이 있습니다. 하지만 종종 모듈이 그것을 사용하기 이전에 모의가 사용하도록 Jest에 지시해야 할 필요가 있습니다. 이 이유로, Jest는 자동으로 `jest.mock` 호출을 모듈의 처음으로 (imports 이전으로) 호이스트 할 것입니다. 이에 대해 더 자세히 학습하고 실제로 그것을 보려면, [이 저장소](https://github.com/kentcdodds/how-jest-mocking-works)를 참고하세요.
 
-## Mocking methods which are not implemented in JSDOM
+## JSDOM에 구현되지 않은 모의 메서드
 
-If some code uses a method which JSDOM (the DOM implementation used by Jest) hasn't implemented yet, testing it is not easily possible. This is e.g. the case with `window.matchMedia()`. Jest returns `TypeError: window.matchMedia is not a function` and doesn't properly execute the test.
+일부 코드는 아직 구현되지 않은 JSDOM (Jest에 의해 사용되는 DOM 구현) 메서드를 사용하는 경우, 테스트하는 것은 쉽지 않습니다. 이것은 예를 들어 `window.matchMedia()`와 같은 예입니다. Jest는 `TypeError: window.matchMedia is not a function`를 반환하고 테스트를 올바르게 실행하지 않습니다.
 
-In this case, mocking `matchMedia` in the test file should solve the issue:
+이 경우, 테스트 파일의 `matchMedia`를 모의 하는 것이 이슈를 해결할 수 있습니다:
 
 ```js
 Object.defineProperty(window, 'matchMedia', {
