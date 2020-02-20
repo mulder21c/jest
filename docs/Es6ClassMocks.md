@@ -102,7 +102,7 @@ const mock = jest.fn().mockImplementation(() => {
 export default mock;
 ```
 
-Import the mock and the mock method shared by all instances:
+모든 인스턴스에 의해 공유된 모의와 모의 메서드를 가져오세요:
 
 ```javascript
 // sound-player-consumer.test.js
@@ -129,11 +129,11 @@ it('We can check if the consumer called a method on the class instance', () => {
 });
 ```
 
-### Calling [`jest.mock()`](JestObjectAPI.md#jestmockmodulename-factory-options) with the module factory parameter
+### 모듈 팩토리 파라미터를 가진 [`jest.mock()`](JestObjectAPI.md#jestmockmodulename-factory-options) 호출하기
 
-`jest.mock(path, moduleFactory)` takes a **module factory** argument. A module factory is a function that returns the mock.
+`jest.mock(path, moduleFactory)`는 **module factory** 인자를 취합니다. 모듈 팩토리는 모의를 반환하는 함수입니다.
 
-In order to mock a constructor function, the module factory must return a constructor function. In other words, the module factory must be a function that returns a function - a higher-order function (HOF).
+생성자 함수를 모의하기 위해, 모듈 팩토리는 생성자 함수를 반환해야 합니다. 다른 말로, 모듈 팩토리는 함수를 반환하는 함수 - 고차 함수(HOF) 여야 합니다.
 
 ```javascript
 import SoundPlayer from './sound-player';
@@ -145,10 +145,10 @@ jest.mock('./sound-player', () => {
 });
 ```
 
-A limitation with the factory parameter is that, since calls to `jest.mock()` are hoisted to the top of the file, it's not possible to first define a variable and then use it in the factory. An exception is made for variables that start with the word 'mock'. It's up to you to guarantee that they will be initialized on time! For example, the following will throw an out-of-scope error due to the use of 'fake' instead of 'mock' in the variable declaration:
+팩토리 파라미터의 한계는 `jest.mock()` 호출이 파일의 최 상단으로 호이스팅 되기 때문에, 먼저 변수를 정의한 다음 팩토리에서 그것을 사용할 수 없다는 것입니다. 예외는 'mock'이라는 단어로 시작하는 변수에 대해 만들어 집니다. 제시간에 초기화 될 것이라고 보장하는 것은 여러분께 달려있습니다! 예를 들어, 다음은 변수 선언에서 'mock' 대신 'fake'의 사용으로 인해 범위를 벗어난 오류를 던질 것입니다:
 
 ```javascript
-// Note: this will fail
+// 주목: 이것은 실패할 것입니다
 import SoundPlayer from './sound-player';
 const fakePlaySoundFile = jest.fn();
 jest.mock('./sound-player', () => {
@@ -158,11 +158,11 @@ jest.mock('./sound-player', () => {
 });
 ```
 
-### Replacing the mock using [`mockImplementation()`](MockFunctionAPI.md#mockfnmockimplementationfn) or [`mockImplementationOnce()`](MockFunctionAPI.md#mockfnmockimplementationoncefn)
+### [`mockImplementation()`](MockFunctionAPI.md#mockfnmockimplementationfn)나 [`mockImplementationOnce()`](MockFunctionAPI.md#mockfnmockimplementationoncefn)를 사용하여 모의 반환하기
 
-You can replace all of the above mocks in order to change the implementation, for a single test or all tests, by calling `mockImplementation()` on the existing mock.
+단일 테스트나 모든 테스트에 대해 구현을 변경하기 위해 위의 모든 모의를 기존의 모의에서 `mockImplementation()`를 호출하여 교체할 수 있습니다.
 
-Calls to jest.mock are hoisted to the top of the code. You can specify a mock later, e.g. in `beforeAll()`, by calling `mockImplementation()` (or `mockImplementationOnce()`) on the existing mock instead of using the factory parameter. This also allows you to change the mock between tests, if needed:
+jest.mock 호출은 코드의 최 상단으로 호이스팅 됩니다. 나중에, 예를 들어 팩토리 파라미터를 사용하는 대신 기존 모의에 `mockImplementation()` (또는 `mockImplementationOnce()`)를 호출하여 모의를 지정할 수 있습니다. 필요하다면, 테스트 사이에 모의를 변경하는 것 역시 가능합니다:
 
 ```javascript
 import SoundPlayer from './sound-player';
@@ -188,15 +188,15 @@ describe('When SoundPlayer throws an error', () => {
 });
 ```
 
-## In depth: Understanding mock constructor functions
+## 심화: 모의 생성자 함수 이해하기
 
-Building your constructor function mock using `jest.fn().mockImplementation()` makes mocks appear more complicated than they really are. This section shows how you can create your own mocks to illustrate how mocking works.
+`jest.fn().mockImplementation()`을 사용하여 생성자 함수 모의를 만드는 것은 모의를 실제 보다 더 복잡한 것 처럼 보여지게 만듭니다. 이 섹션은 모의가 어떻게 동작하는지를 설명하기 위해 자체 모의를 생성할 수 있는 방법을 보여 줍니다.
 
-### Manual mock that is another ES6 class
+### 수동 모의는 또 다른 ES6 클래스입니다
 
-If you define an ES6 class using the same filename as the mocked class in the `__mocks__` folder, it will serve as the mock. This class will be used in place of the real class. This allows you to inject a test implementation for the class, but does not provide a way to spy on calls.
+`__mocks__` 폴더에 모의된 클래스와 동일한 파일 이름을 사용하는 ES6 클래스를 정의하는 경우, 그것은 모의로써 동작할 것입니다. 이 클래스는 실제 클래스의 위치에서 사용될 것입니다. 이것은 클래스에 대해 테스트 구현을 주입할 수 있게 하지만, 호출에 대한 감시하는 방법을 제공하지 않습니다.
 
-For the contrived example, the mock might look like this:
+인위적인 예로, 모의는 이것 처럼 보일 수 있습니다:
 
 ```javascript
 // __mocks__/sound-player.js
