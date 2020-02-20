@@ -157,13 +157,13 @@ Object.defineProperty(window, 'matchMedia', {
 });
 ```
 
-This works if `window.matchMedia()` is used in a function (or method) which is invoked in the test. If `window.matchMedia()` is executed directly in the tested file, Jest reports the same error. In this case, the solution is to move the manual mock into a separate file and include this one in the test **before** the tested file:
+`window.matchMedia()`이 테스트에서 호출되는 함수에 (또는 메서드에) 사용되는 경우 동작합니다. `window.matchMedia()`가 테스트 된 파일에 직접적으로 실행되는 경우, Jest는 동일한 오류를 보고합니다. 이 경우, 해결 방법은 별도의 파일로 수동 모의를 옮기고 테스트 된 파일보다 *이전* 테스트에 포함시키는 것입니다:
 
 ```js
-import './matchMedia.mock'; // Must be imported before the tested file
+import './matchMedia.mock'; // 테스트 된 파일 이전에 import되어야 합니다
 import {myMethod} from './file-to-test';
 
 describe('myMethod()', () => {
-  // Test the method here...
+  // 여기에서 메서드를 테스트 하세요...
 });
 ```
