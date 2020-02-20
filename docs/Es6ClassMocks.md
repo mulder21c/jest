@@ -1,15 +1,15 @@
 ---
 id: es6-class-mocks
-title: ES6 Class Mocks
+title: ES6 클래스 모의
 ---
 
-Jest can be used to mock ES6 classes that are imported into files you want to test.
+Jest는 테스트 하기 원하는 파일로 가져온 ES6 클래스를 모의하는데 사용될 수 있습니다.
 
-ES6 classes are constructor functions with some syntactic sugar. Therefore, any mock for an ES6 class must be a function or an actual ES6 class (which is, again, another function). So you can mock them using [mock functions](MockFunctions.md).
+ES6 클래스는 일무 문법 설탕을 가진 생성자 함수입니다. 따라서 ES6 클래스에 대한 모의는 함수나 실제 ES6 클래스(다시 말하지만, 다른 함수) 여야 합니다. 따라서 [모의 함수](MockFunctions.md)를 사용하여 그것들을 모의할 수 있습니다.
 
-## An ES6 Class Example
+## ES6 클래스 예
 
-We'll use a contrived example of a class that plays sound files, `SoundPlayer`, and a consumer class which uses that class, `SoundPlayerConsumer`. We'll mock `SoundPlayer` in our tests for `SoundPlayerConsumer`.
+샤운드 파일을 재생하는 클래스의 인위적인 예 `SoundPlayer`와 이 클래스를 사용하는 소비 클래스 `SoundPlayerConsumer`를 사용할 겁니다. `SoundPlayerConsumer`에 대한 테스트에 `SoundPlayer`를 모의할 것입니다.
 
 ```javascript
 // sound-player.js
@@ -40,23 +40,23 @@ export default class SoundPlayerConsumer {
 }
 ```
 
-## The 4 ways to create an ES6 class mock
+## ES6 모의를 생성하는 4가지 방법
 
-### Automatic mock
+### 자동 모의
 
-Calling `jest.mock('./sound-player')` returns a useful "automatic mock" you can use to spy on calls to the class constructor and all of its methods. It replaces the ES6 class with a mock constructor, and replaces all of its methods with [mock functions](MockFunctions.md) that always return `undefined`. Method calls are saved in `theAutomaticMock.mock.instances[index].methodName.mock.calls`.
+`jest.mock('./sound-player')`을 호출하는 것은 클래스 생성자와 모든 메서드 호출을 감시하는데 사용할 수 있는 유용한 "자동 모의"를 반환합니다. ES6 클래스를 모의 생성자로 교체하고, 모든 메서드를 항상 `undefined`를 반환하는 [모의 함수](MockFunctions.md)로 교체합니다. 메서드 호출은 `theAutomaticMock.mock.instances[index].methodName.mock.calls`에 저장됩니다.
 
-Please note that if you use arrow functions in your classes, they will _not_ be part of the mock. The reason for that is that arrow functions are not present on the object's prototype, they are merely properties holding a reference to a function.
+클래스에 화살표 함수를 사용한다면, 그것들은 모의의 일부가 되지 _않음_을 주의하세요. 그 이유는 화살표 함수는 객체의 프로토타입에 존재하지 않고, 단지 함수에 대한 참조를 보유하는 속성(property)들일 뿐이기 때문입니다.
 
-If you don't need to replace the implementation of the class, this is the easiest option to set up. For example:
+클래스의 구현을 교체할 필요가 없다면, 이것은 설정을 위한 가장 쉬운 옵션입니다. 예를 들어:
 
 ```javascript
 import SoundPlayer from './sound-player';
 import SoundPlayerConsumer from './sound-player-consumer';
-jest.mock('./sound-player'); // SoundPlayer is now a mock constructor
+jest.mock('./sound-player'); // SoundPlayer는 이제 모의 생성자입니다
 
 beforeEach(() => {
-  // Clear all instances and calls to constructor and all methods:
+  // 모든 인스턴스와 생성자와 모든 메서드 호출을 정리합니다:
   SoundPlayer.mockClear();
 });
 
@@ -66,34 +66,34 @@ it('We can check if the consumer called the class constructor', () => {
 });
 
 it('We can check if the consumer called a method on the class instance', () => {
-  // Show that mockClear() is working:
+  // mockClear() 이 동작하고 잇는 것을 보여줍니다:
   expect(SoundPlayer).not.toHaveBeenCalled();
 
   const soundPlayerConsumer = new SoundPlayerConsumer();
-  // Constructor should have been called again:
+  // 생성자는 다시 호출되지 않아야 합니다:
   expect(SoundPlayer).toHaveBeenCalledTimes(1);
 
   const coolSoundFileName = 'song.mp3';
   soundPlayerConsumer.playSomethingCool();
 
-  // mock.instances is available with automatic mocks:
+  // mock.instances는 자동 모의와 사용 가능합니다:
   const mockSoundPlayerInstance = SoundPlayer.mock.instances[0];
   const mockPlaySoundFile = mockSoundPlayerInstance.playSoundFile;
   expect(mockPlaySoundFile.mock.calls[0][0]).toEqual(coolSoundFileName);
-  // Equivalent to above check:
+  // 위 점검과 동일합니다:
   expect(mockPlaySoundFile).toHaveBeenCalledWith(coolSoundFileName);
   expect(mockPlaySoundFile).toHaveBeenCalledTimes(1);
 });
 ```
 
-### Manual mock
+### 수동 모의
 
-Create a [manual mock](ManualMocks.md) by saving a mock implementation in the `__mocks__` folder. This allows you to specify the implementation, and it can be used across test files.
+`__mocks__` 폴더에 모의 구현을 저장하여 [수동 모의](ManualMocks.md)를 생성하세요. 이를 통해 구현을 지정할 수 있고, 테스트 파일 전반에 걸쳐 사용될 수 있습니다.
 
 ```javascript
 // __mocks__/sound-player.js
 
-// Import this named export into your test file:
+// 이 기명 내보내기를 테스트 파일에 가져오세요:
 export const mockPlaySoundFile = jest.fn();
 const mock = jest.fn().mockImplementation(() => {
   return {playSoundFile: mockPlaySoundFile};
@@ -111,7 +111,7 @@ import SoundPlayerConsumer from './sound-player-consumer';
 jest.mock('./sound-player'); // SoundPlayer is now a mock constructor
 
 beforeEach(() => {
-  // Clear all instances and calls to constructor and all methods:
+  // 모든 인스턴스와 생성자와 모든 메서드 호출을 정리하세요:
   SoundPlayer.mockClear();
   mockPlaySoundFile.mockClear();
 });
