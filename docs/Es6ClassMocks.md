@@ -211,13 +211,13 @@ export default class SoundPlayer {
 }
 ```
 
-### Mock using module factory parameter
+### 모듈 팩토리 파라미터를 사용하여 모의
 
-The module factory function passed to `jest.mock(path, moduleFactory)` can be a HOF that returns a function\*. This will allow calling `new` on the mock. Again, this allows you to inject different behavior for testing, but does not provide a way to spy on calls.
+`jest.mock(path, moduleFactory)`으로 전달 된 모듈 팩토리 함수는 함수를 반환하는 HOF일 수 있습니다\*. 이것은 모의에서 `new` 호출을 허용할 것입니다. 다시 말하지만, 테스트를 위해 다른 동작을 주입하는 것이 가능하기는 하지만, 호출을 감시하는 방법은 제공하지 않습니다.
 
-#### \* Module factory function must return a function
+#### \* 모듈 팩토리 함수는 함수를 반환해야 합니다
 
-In order to mock a constructor function, the module factory must return a constructor function. In other words, the module factory must be a function that returns a function - a higher-order function (HOF).
+생성자 함수를 모의 하기 위해서, 모듈 팩토리는 생성자 함수를 반환해야 합니다. 다시 말해서, 모듈 팩토리는 함수를 반환하는 함수 - 고차 함수 (HOF) 여야 합니다.
 
 ```javascript
 jest.mock('./sound-player', () => {
@@ -227,45 +227,46 @@ jest.mock('./sound-player', () => {
 });
 ```
 
-**_Note: Arrow functions won't work_**
+**_Note: 화살표 함수는 동작하지 않을 것입니다_**
 
-Note that the mock can't be an arrow function because calling `new` on an arrow function is not allowed in JavaScript. So this won't work:
+화살표 함수에서 `new`를 호출하는 것은 자바스크립트에서 허용되지 않기 때문에 모의는 화살표 함수가 될 수 없음에 주목하세요. 따라서 이것은 동작하지 않을 것입니다:
 
 ```javascript
 jest.mock('./sound-player', () => {
   return () => {
-    // Does not work; arrow functions can't be called with new
+    // 동작하지 않습니다; 화살표 함수는 new를 가지고 호출 될 수 없습니다
     return {playSoundFile: () => {}};
   };
 });
 ```
 
-This will throw **_TypeError: \_soundPlayer2.default is not a constructor_**, unless the code is transpiled to ES5, e.g. by `@babel/preset-env`. (ES5 doesn't have arrow functions nor classes, so both will be transpiled to plain functions.)
+코드가 예를 들어 `@babel/preset-env`에 의해  ES5로 트랜스파일되지 않는 이상, 이것은 **_TypeError: \_soundPlayer2.default is not a constructor_**를 던질 것입니다. (ES5는 애로우 함수나 클래스를 가지지 않기 때문에, 순수 함수로 트랜스파일될 것입니다.)
 
-## Keeping track of usage (spying on the mock)
+## 사용 추척 (모의에서 감시하기)
 
-Injecting a test implementation is helpful, but you will probably also want to test whether the class constructor and methods are called with the correct parameters.
+테스트 구현을 주입하는 것은 도움이 되지만, 클래스 생성자와 메서드가 올바른 파리미터와 호출되는지를 테스트 하기 원할 수도 있을 겁니다.
 
-### Spying on the constructor
+### 생성자 감시
 
-In order to track calls to the constructor, replace the function returned by the HOF with a Jest mock function. Create it with [`jest.fn()`](JestObjectAPI.md#jestfnimplementation), and then specify its implementation with `mockImplementation()`.
+생성자를 호출하는 것을 추적하기 위해, HOF에 의해 반환되는 함수를 Jest 모의 함수로 변경하세요. [`jest.fn()`](JestObjectAPI.md#jestfnimplementation)으로 생성한 다음,  `mockImplementation()`으로 구현을 지정하세요.
 
 ```javascript
 import SoundPlayer from './sound-player';
 jest.mock('./sound-player', () => {
-  // Works and lets you check for constructor calls:
+  // 생성자 호출에 대한 작업 및 확인:
   return jest.fn().mockImplementation(() => {
     return {playSoundFile: () => {}};
   });
 });
 ```
 
-This will let us inspect usage of our mocked class, using `SoundPlayer.mock.calls`: `expect(SoundPlayer).toHaveBeenCalled();` or near-equivalent: `expect(SoundPlayer.mock.calls.length).toEqual(1);`
+`SoundPlayer.mock.calls`: `expect(SoundPlayer).toHaveBeenCalled();`나 거의 등가적인 `expect(SoundPlayer.mock.calls.length).toEqual(1);`를 사용하여 모의 클래스의 사용을 검사하게 할 것입니다.
 
-### Spying on methods of our class
+### 클래스의 메서드 감시
 
-Our mocked class will need to provide any member functions (`playSoundFile` in the example) that will be called during our tests, or else we'll get an error for calling a function that doesn't exist. But we'll probably want to also spy on calls to those methods, to ensure that they were called with the expected parameters.
+모의된 클래스는 테스트 동안 호출될 멤버 함수를 (예제에서 `playSoundFile`) 제공할 필요가 있거나, 그렇지 않으면 존재하지 않는 함수 호출에 대한 오류를 얻게 될 것입니다. 예상되는 파라미터를 가지고 호출되도록 하기 위해서, 그 메서드 호출도 감시하기 원할 것입니다.
 
+테스트 동안 모의 생성자 함수가 호출 될 때마다 새로운 객체가 생성될 것입니다.
 A new object will be created each time the mock constructor function is called during tests. To spy on method calls in all of these objects, we populate `playSoundFile` with another mock function, and store a reference to that same mock function in our test file, so it's available during tests.
 
 ```javascript
