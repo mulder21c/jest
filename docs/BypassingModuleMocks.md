@@ -1,11 +1,11 @@
 ---
 id: bypassing-module-mocks
-title: Bypassing module mocks
+title: 우회 모듈 모의
 ---
 
-Jest allows you to mock out whole modules in your tests, which can be useful for testing if your code is calling functions from that module correctly. However, sometimes you may want to use parts of a mocked module in your _test file_, in which case you want to access the original implementation, rather than a mocked version.
+Jest는 테스트에서 전체 모듈을 모의할 수 있게 해주는데, 코드가 그 모듈에서 올바르게 함수를 호출하고 있는지를 테스트 하는데 유용하게 사용될 수 있습니다. 하지만, 때때로 _테스트 파일_에서 모의된 모듈의 일부를 사용하기 원할 수 있고, 그 경우에 모의된 버전보다 원래 구현에 접근하기를 원할 수 있습니다.
 
-Consider writing a test case for this `createUser` function:
+이 `createUser` 함수에 대한 테스트 케이스를 작성한다고 가정해보세요:
 
 ```javascript
 // createUser.js
@@ -18,7 +18,7 @@ export const createUser = async () => {
 };
 ```
 
-Your test will want to mock the `fetch` function so that we can be sure that it gets called without actually making the network request. However, you'll also need to mock the return value of `fetch` with a `Response` (wrapped in a `Promise`), as our function uses it to grab the created user's ID. So you might initially try writing a test like this:
+테스트는 실제로 네트워크 요청을 하지 않고도 함수가 호출될 수 있도록 `fetch` 함수를 모의하기 원할 것입니다. 그러나, 생성된 사용자의 ID를 얻기 위해 함수를 사용하기 때문에, (`Promise`로 싸여진) `Response`를 가진 `fetch`의 반환 된 값을 모의할 필요가 있을 것입니다. 따라서 처음에 테스트를 다음과 같이 작성해 볼 수 있습니다:
 
 ```javascript
 jest.mock('node-fetch');
@@ -40,21 +40,21 @@ test('createUser calls fetch with the right args and returns the user id', async
 });
 ```
 
-However, if you ran that test you would find that the `createUser` function would fail, throwing the error: `TypeError: response.text is not a function`. This is because the `Response` class you've imported from `node-fetch` has been mocked (due to the `jest.mock` call at the top of the test file) so it no longer behaves the way it should.
+하지만, 그 테스트를 실행하면, `TypeError: response.text is not a function` 오류가 발생하여 `createUser` 함수가 실패하는 것을 발견할 것입니다. 이는 `node-fetch`로부터 가져온 `Response` 클래스가 모의 되었기 때문에 (테스트 파일의 최 상단에서 `jest.mock`이 호출하기 때문에) 더 이상 제 구실을 하지 않습니다.
 
-To get around problems like this, Jest provides the `jest.requireActual` helper. To make the above test work, make the following change to the imports in the test file:
+이와 같은 문제를 해결하기 위해, Jest는 `jest.requireActual` 헬퍼를 제공합니다. 위 테스트가 동작하게 하기 위해, 테스트 파일의 가져오기를 다음과 같이 변경하세요:
 
 ```javascript
-// BEFORE
+// 이전
 jest.mock('node-fetch');
 import fetch, {Response} from 'node-fetch';
 ```
 
 ```javascript
-// AFTER
+// 이후
 jest.mock('node-fetch');
 import fetch from 'node-fetch';
 const {Response} = jest.requireActual('node-fetch');
 ```
 
-This allows your test file to import the actual `Response` object from `node-fetch`, rather than a mocked version. This means the test will now pass correctly.
+이를 통해 테스트 파일은 모의된 버전 대신 `node-fetch`로부터의 실제 `Response` 객체를 가져올 수 있습니다. 이는 테스트가 이제 올바르게 통과할 것을 의미합니다.
