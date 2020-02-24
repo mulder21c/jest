@@ -266,8 +266,7 @@ jest.mock('./sound-player', () => {
 
 모의된 클래스는 테스트 동안 호출될 멤버 함수를 (예제에서 `playSoundFile`) 제공할 필요가 있거나, 그렇지 않으면 존재하지 않는 함수 호출에 대한 오류를 얻게 될 것입니다. 예상되는 파라미터를 가지고 호출되도록 하기 위해서, 그 메서드 호출도 감시하기 원할 것입니다.
 
-테스트 동안 모의 생성자 함수가 호출 될 때마다 새로운 객체가 생성될 것입니다.
-A new object will be created each time the mock constructor function is called during tests. To spy on method calls in all of these objects, we populate `playSoundFile` with another mock function, and store a reference to that same mock function in our test file, so it's available during tests.
+테스트 동안 모의 생성자 함수가 호출 될 때마다 새로운 객체가 생성될 것입니다. 이 모든 객체들에서 메서드 호출을 감시하기 위해, `playSoundFile`을 다른 모의함수로 덧붙이고, 테스트 파일의 동일한 모의 함수에 대한 참조를 저장하므로, 테스트 동안 사용할 수 있습니다.
 
 ```javascript
 import SoundPlayer from './sound-player';
@@ -275,17 +274,17 @@ const mockPlaySoundFile = jest.fn();
 jest.mock('./sound-player', () => {
   return jest.fn().mockImplementation(() => {
     return {playSoundFile: mockPlaySoundFile};
-    // Now we can track calls to playSoundFile
+    // 이제 playSoundFile 호출을 추적할 수 있습니다
   });
 });
 ```
 
-The manual mock equivalent of this would be:
+이에 상응하는 수동 모의는 다음과 같습니다:
 
 ```javascript
 // __mocks__/sound-player.js
 
-// Import this named export into your test file
+// 이 기명 내보내기를 테스트 파일로 불러들이세요
 export const mockPlaySoundFile = jest.fn();
 const mock = jest.fn().mockImplementation(() => {
   return {playSoundFile: mockPlaySoundFile};
@@ -294,11 +293,11 @@ const mock = jest.fn().mockImplementation(() => {
 export default mock;
 ```
 
-Usage is similar to the module factory function, except that you can omit the second argument from `jest.mock()`, and you must import the mocked method into your test file, since it is no longer defined there. Use the original module path for this; don't include `__mocks__`.
+사용법은 `jest.mock()`에서 두 번째 인자를 생략할 수 있다는 것을 제외하고 모의 팩토리 함수와 비슷하고, 테스트 파일에 더 이상 정의되지 않기 때문에 테스트 파일로 모의 메서드를 가져와야 합니다. 이에 대한 원래 모듈 경로를 사용하세요; `__mocks__`을 포함하지 마세요.
 
-### Cleaning up between tests
+### 테스트 간 정리
 
-To clear the record of calls to the mock constructor function and its methods, we call [`mockClear()`](MockFunctionAPI.md#mockfnmockclear) in the `beforeEach()` function:
+모의 생성자 함수와 메서드 호출 기록을 정리하려면, `beforeEach()` 함수에서 [`mockClear()`](MockFunctionAPI.md#mockfnmockclear)를 호출합니다:
 
 ```javascript
 beforeEach(() => {
@@ -307,9 +306,9 @@ beforeEach(() => {
 });
 ```
 
-## Complete example
+## 전체 예
 
-Here's a complete test file which uses the module factory parameter to `jest.mock`:
+모의 팩토리 파라미터를 `jest.mock`로 사용하는 전체 테스트 파일은 다음과 같습니다:
 
 ```javascript
 // sound-player-consumer.test.js
@@ -330,7 +329,7 @@ beforeEach(() => {
 
 it('The consumer should be able to call new() on SoundPlayer', () => {
   const soundPlayerConsumer = new SoundPlayerConsumer();
-  // Ensure constructor created the object:
+  // 생성자가 객체를 생성했는지 확인:
   expect(soundPlayerConsumer).toBeTruthy();
 });
 
