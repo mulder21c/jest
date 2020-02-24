@@ -1,13 +1,13 @@
 ---
 id: webpack
-title: Using with webpack
+title: Webpack과 사용하기
 ---
 
-Jest can be used in projects that use [webpack](https://webpack.js.org/) to manage assets, styles, and compilation. webpack _does_ offer some unique challenges over other tools because it integrates directly with your application to allow managing stylesheets, assets like images and fonts, along with the expansive ecosystem of compile-to-JavaScript languages and tools.
+Jest는 어셋, 스타일, 컴파일을 관리하기 위해 [webpack](https://webpack.js.org/)을 사용하는 프로젝트에 사용될 수 있습니다. webpack은 스타일시트, 자바스크립트로 컴파일 되는 언어 및 도구의 광범위한 에코 시스템과 더불어 이미지와 폰트 같은 어셋을 관리할 수 있도록 어플리케이션과 직접 통합하기 때문에 다른 도구들 보다 일부 고유한 기회를 제공_합니다_.
 
-## A webpack example
+## webpack 예제
 
-Let's start with a common sort of webpack config file and translate it to a Jest setup.
+다소 일반적인 webpack 구성 파일을 가지고 시작하여 Jest 설정으로 변환해봅시다.
 
 ```js
 // webpack.config.js
@@ -36,11 +36,11 @@ module.exports = {
 };
 ```
 
-If you have JavaScript files that are transformed by Babel, you can [enable support for Babel](GettingStarted.md#using-babel) by installing the `babel-jest` plugin. Non-Babel JavaScript transformations can be handled with Jest's [`transform`](Configuration.md#transform-objectstring-pathtotransformer--pathtotransformer-object) config option.
+Babel에 의해 변환되는 자바스크립트 파일이 있는 경우, `babel-jest` 플러그인을 설치하여 [Babel에 대한 지원을 활성화](GettingStarted.md#using-babel) 할 수 있습니다. Babel 이외의 자바스크립트 변환은 Jest의 [`transform`](Configuration.md#transform-objectstring-pathtotransformer--pathtotransformer-object) 구성 옵션에서 처리될 수 있습니다.
 
-### Handling Static Assets
+### 정적 어셋 처리하기
 
-Next, let's configure Jest to gracefully handle asset files such as stylesheets and images. Usually, these files aren't particularly useful in tests so we can safely mock them out. However, if you are using CSS Modules then it's better to mock a proxy for your className lookups.
+다음으로, 스타일시트와 이미지 같은 어셋 파일을 우아하게 처리하기 위해 Jest를 구성해봅시다. 일반적으로, 이 파일들은 테스트에 특히 유용하지 않으므로 안전하게 모의 할 수 있습니다. 하지만, CSS 모듈을 사용하는 경우 클래스명 조회를 위해 프록시를 모의하는 것이 좋습니다.
 
 ```json
 // package.json
@@ -54,7 +54,7 @@ Next, let's configure Jest to gracefully handle asset files such as stylesheets 
 }
 ```
 
-And the mock files themselves:
+그리고 모의 파일 자체는:
 
 ```js
 // __mocks__/styleMock.js
@@ -68,15 +68,15 @@ module.exports = {};
 module.exports = 'test-file-stub';
 ```
 
-### Mocking CSS Modules
+### CSS 모듈 모의
 
-You can use an [ES6 Proxy](https://github.com/keyanzhang/identity-obj-proxy) to mock [CSS Modules](https://github.com/css-modules/css-modules):
+[CSS 모듈](https://github.com/css-modules/css-modules)을 모의 하기 위해 [ES6 프록시](https://github.com/keyanzhang/identity-obj-proxy)를 사용할 수 있습니다:
 
 ```bash
 yarn add --dev identity-obj-proxy
 ```
 
-Then all your className lookups on the styles object will be returned as-is (e.g., `styles.foobar === 'foobar'`). This is pretty handy for React [Snapshot Testing](SnapshotTesting.md).
+이후 스타일 객체의 모든 클래스명 조회가 그대로 (예를 들어, `styles.foobar === 'foobar'`) 반환될 것입니다. 이는 React [스냅샷 테스트 하기](SnapshotTesting.md)에 매우 편리합니다.
 
 ```json
 // package.json (for CSS Modules)
@@ -90,9 +90,9 @@ Then all your className lookups on the styles object will be returned as-is (e.g
 }
 ```
 
-> Notice that Proxy is enabled in Node 6 by default. If you are not on Node 6 yet, make sure you invoke Jest using `node --harmony_proxies node_modules/.bin/jest`.
+> 프록시는 기본적으로 Node 6에서 활성화 되어 있음을 주의하세요. 아직 Node 6가 아니라면, `node --harmony_proxies node_modules/.bin/jest`를 사용하여 Jest를 호출하세요.
 
-If `moduleNameMapper` cannot fulfill your requirements, you can use Jest's [`transform`](Configuration.md#transform-objectstring-pathtotransformer--pathtotransformer-object) config option to specify how assets are transformed. For example, a transformer that returns the basename of a file (such that `require('logo.jpg');` returns `'logo'`) can be written as:
+`moduleNameMapper`이 요구사항을 충족시킬 수 없는 경우, 어셋이 변환되는 방법을 지정하기 위해 Jest의 [`transform`](Configuration.md#transform-objectstring-pathtotransformer--pathtotransformer-object) 구성 옵션을 사용할 수 있습니다. 예를 들어, 파일의 기본 이름을 (`require('logo.jpg');`이 `'logo'`를 반환하는 것과 같은) 반환하는 변환기는 다음과 같이 작성될 수 있습니다:
 
 ```js
 // fileTransformer.js
@@ -106,7 +106,7 @@ module.exports = {
 ```
 
 ```json
-// package.json (for custom transformers and CSS Modules)
+// package.json (사용자 정의 변환기와 CSS 모듈에 대해)
 {
   "jest": {
     "moduleNameMapper": {
@@ -119,9 +119,9 @@ module.exports = {
 }
 ```
 
-We've told Jest to ignore files matching a stylesheet or image extension, and instead, require our mock files. You can adjust the regular expression to match the file types your webpack config handles.
+Jest는 스타일시트나 이미지 확장자와 일치하는 파일을 무시하고 대신 모의 파일이 필요하다고 이야기 했습니다. 웹팩 구성이 처리하는 파일 유형과 일치하는 정규식을 조정할 수 있습니다.
 
-_Note: if you are using babel-jest with additional code preprocessors, you have to explicitly define babel-jest as a transformer for your JavaScript code to map `.js` files to the babel-jest module._
+_참고: 추가적인 코드 전처리기와 함께 babel-jest를 사용하는 경우, `.js` 파일을 babel-jest 모듈에 일치시키기 위해 babel-jest를 JavaScript 코드에 대한 변환기로 명시적으로 정의해야 합니다._
 
 ```json
 "transform": {
