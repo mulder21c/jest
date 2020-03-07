@@ -119,7 +119,7 @@ module.exports = {
 }
 ```
 
-Jest는 스타일시트나 이미지 확장자와 일치하는 파일을 무시하고 대신 모의 파일이 필요하다고 이야기 했습니다. 웹팩 구성이 처리하는 파일 유형과 일치하는 정규식을 조정할 수 있습니다.
+Jest는 스타일시트나 이미지 확장자와 일치하는 파일을 무시하고 대신 모의 파일이 필요하다고 이야기 했습니다. webpack 구성이 처리하는 파일 유형과 일치하는 정규식을 조정할 수 있습니다.
 
 _참고: 추가적인 코드 전처리기와 함께 babel-jest를 사용하는 경우, `.js` 파일을 babel-jest 모듈에 일치시키기 위해 babel-jest를 JavaScript 코드에 대한 변환기로 명시적으로 정의해야 합니다._
 
@@ -131,9 +131,9 @@ _참고: 추가적인 코드 전처리기와 함께 babel-jest를 사용하는 �
 }
 ```
 
-### Configuring Jest to find our files
+### 파일을 찾도록 Jest를 구성하기
 
-Now that Jest knows how to process our files, we need to tell it how to _find_ them. For webpack's `modulesDirectories`, and `extensions` options there are direct analogs in Jest's `moduleDirectories` and `moduleFileExtensions` options.
+이제 Jest가 파일을 처리하는 방법을 알았으니, 그것들을 _찾는_ 방법에 대해 이야기할 필요가 있습니다. webpack의 `modulesDirectories`과 `extensions` 옵션의 경우 Jest의 `moduleDirectories`과 `moduleFileExtensions` 옵션에 정확히 유사한 것들이 있습니다.
 
 ```json
 // package.json
@@ -150,9 +150,9 @@ Now that Jest knows how to process our files, we need to tell it how to _find_ t
 }
 ```
 
-> Note: `<rootDir>` is a special token that gets replaced by Jest with the root of your project. Most of the time this will be the folder where your `package.json` is located unless you specify a custom `rootDir` option in your configuration.
+> 참고: `<rootDir>`는 Jest에 의해 프로젝트의 루트로 대체되는 특수 토큰입니다. 대부분 이것은 구성에 사용자 정의 `rootDir`을 지정하지 않는 이상 `packpackage.json`이 위치한 폴더가 될 것입니다.
 
-Similarly webpack's `resolve.root` option functions like setting the `NODE_PATH` env variable, which you can set, or make use of the `modulePaths` option.
+마찬가지로 webpack의 `resolve.root` 옵션은 `NODE_PATH` 환경 변수를 설정하는 것과 같은 기능을 하며, 설정하거나 `modulePaths` 옵션을 사용할 수 있습니다.
 
 ```json
 // package.json
@@ -169,7 +169,7 @@ Similarly webpack's `resolve.root` option functions like setting the `NODE_PATH`
 }
 ```
 
-And finally, we have to handle the webpack `alias`. For that we can make use of the `moduleNameMapper` option again.
+그리고 마지막으로, webapck `alias`를 처리해야 합니다. 이를 위해 `moduleNameMapper` 옵션을 다시 사용할 수 있습니다.
 
 ```json
 // package.json
@@ -190,13 +190,13 @@ And finally, we have to handle the webpack `alias`. For that we can make use of 
 }
 ```
 
-That's it! webpack is a complex and flexible tool, so you may have to make some adjustments to handle your specific application's needs. Luckily for most projects, Jest should be more than flexible enough to handle your webpack config.
+그게 다입니다! webpack은 복잡하고 유연한 도구이므로, 특정 어플리케이션의 요구를 처리하기 위해 일부 조정이 필요할 수 있습니다. 운 좋게도 대부분의 프로젝트의 경우 Jest는 webpack 설정을 처리하기에 충분히 유연할 것입니다.
 
-> Note: For more complex webpack configurations, you may also want to investigate projects such as: [babel-plugin-webpack-loaders](https://github.com/istarkov/babel-plugin-webpack-loaders).
+> 참고: 더 복잡한 webpack 구성의 경우, [babel-plugin-webpack-loaders](https://github.com/istarkov/babel-plugin-webpack-loaders)와 같은 프로젝트를 살펴볼 수도 있습니다.
 
-## Using with webpack 2
+## Webpack 2와 함께 사용하기
 
-webpack 2 offers native support for ES modules. However, Jest runs in Node, and thus requires ES modules to be transpiled to CommonJS modules. As such, if you are using webpack 2, you most likely will want to configure Babel to transpile ES modules to CommonJS modules only in the `test` environment.
+webpack 2는 ES 모듈에 대한 기본 지원을 제공합니다. 하지만 Jest는 Node에서 시행되고 따라서 ES 모듈은 CommonJS 모듈로 트랜스파일되도록 요구됩니다. 따라서, webpack2를 사용하고 있다면, `test` 환경에서만 ES 모듈을 CommonJS 모듈로 트랜스파일 되도록 Babel을 구성하려고 합니다.
 
 ```json
 // .babelrc
@@ -211,9 +211,9 @@ webpack 2 offers native support for ES modules. However, Jest runs in Node, and 
 }
 ```
 
-> Note: Jest caches files to speed up test execution. If you updated .babelrc and Jest is still not working, try running Jest with `--no-cache`.
+> 참고: Jest는 테스트 실행 속도를 높이기 위해 파일을 캐시합니다. .babelrc를 업데이트 했는데 Jest가 여전히 동작하지 않는다면 `--no-cache`로 Jest를 실행해보세요.
 
-If you use dynamic imports (`import('some-file.js').then(module => ...)`), you need to enable the `dynamic-import-node` plugin.
+동적 가져오기를 (`import('some-file.js').then(module => ...)`)를 사용하는 경우, `dynamic-import-node` 플러그인을 활성화해야 합니다.
 
 ```json
 // .babelrc
@@ -230,4 +230,4 @@ If you use dynamic imports (`import('some-file.js').then(module => ...)`), you n
 }
 ```
 
-For an example of how to use Jest with Webpack with React, Redux, and Node, you can view one [here](https://github.com/jenniferabowd/jest_react_redux_node_webpack_complex_example).
+React, Redux, Node와 함께 Jest를 사용하는 방법의 예는 [여기](https://github.com/jenniferabowd/jest_react_redux_node_webpack_complex_example)에서 볼 수 있습니다.
