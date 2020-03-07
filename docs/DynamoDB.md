@@ -1,21 +1,21 @@
 ---
 id: dynamodb
-title: Using with DynamoDB
+title: DynamoDB와 함께 사용하기
 ---
 
-With the [Global Setup/Teardown](Configuration.md#globalsetup-string) and [Async Test Environment](Configuration.md#testenvironment-string) APIs, Jest can work smoothly with [DynamoDB](https://aws.amazon.com/dynamodb/).
+[전역 설정/해제](Configuration.md#globalsetup-string)와 [비동기 테스트 환경](Configuration.md#testenvironment-string) API를 통해, API를 통해, Jest는 [DynamoDB](https://aws.amazon.com/dynamodb/)와 함께 원활하게 작업할 수 있습니다.
 
-## Use jest-dynamodb Preset
+## jest-dynamodb 프리셋 사용
 
-[Jest DynamoDB](https://github.com/shelfio/jest-dynamodb) provides all required configuration to run your tests using DynamoDB.
+[Jest DynamoDB](https://github.com/shelfio/jest-dynamodb)는 DynamoDB를 사용하는 테스트를 수행하는데 요구되는 모든 구성을 제공합니다.
 
-1.  First install `@shelf/jest-dynamodb`
+1.  먼저 `@shelf/jest-dynamodb`를 설치하세요
 
 ```
 yarn add @shelf/jest-dynamodb --dev
 ```
 
-2.  Specify preset in your Jest configuration:
+2.  Jest 구성에 프리셋을 지정하세요:
 
 ```json
 {
@@ -23,9 +23,9 @@ yarn add @shelf/jest-dynamodb --dev
 }
 ```
 
-3.  Create `jest-dynamodb-config.js` and define DynamoDB tables
+3.  `jest-dynamodb-config.js`를 생성하고 DynamoDB 테이블을 정의하세요
 
-See [Create Table API](https://docs.aws.amazon.com/AWSJavaScriptSDK/latest/AWS/DynamoDB.html#createTable-property)
+[테이블 생성 API](https://docs.aws.amazon.com/AWSJavaScriptSDK/latest/AWS/DynamoDB.html#createTable-property)를 참고하세요
 
 ```js
 module.exports = {
@@ -41,7 +41,7 @@ module.exports = {
 };
 ```
 
-4.  Configure DynamoDB client
+4.  DynamoDB 클라이언트 구성
 
 ```js
 const {DocumentClient} = require('aws-sdk/clients/dynamodb');
@@ -59,7 +59,7 @@ const config = {
 const ddb = new DocumentClient(config);
 ```
 
-5.  Write tests
+5.  테스트 작성
 
 ```js
 it('should insert item into table', async () => {
@@ -76,6 +76,6 @@ it('should insert item into table', async () => {
 });
 ```
 
-There's no need to load any dependencies.
+어떤 의존성도 로드할 필요가 없습니다
 
-See [documentation](https://github.com/shelfio/jest-dynamodb) for details.
+자세한 내용은 [문서](https://github.com/shelfio/jest-dynamodb)를 참고하세요.

@@ -1,21 +1,21 @@
 ---
 id: mongodb
-title: Using with MongoDB
+title: MongoDB와 함께 사용하기
 ---
 
-With the [Global Setup/Teardown](Configuration.md#globalsetup-string) and [Async Test Environment](Configuration.md#testenvironment-string) APIs, Jest can work smoothly with [MongoDB](https://www.mongodb.com/).
+[전역 설정/해제](Configuration.md#globalsetup-string)와 [비동기 테스트 환경](Configuration.md#testenvironment-string) API를 통해, Jest는 [MongoDB](https://www.mongodb.com/)와 함께 원활하게 작업할 수 있습니다.
 
-## Use jest-mongodb Preset
+## jest-mongodb 프리셋 사용
 
-[Jest MongoDB](https://github.com/shelfio/jest-mongodb) provides all required configuration to run your tests using MongoDB.
+[Jest MongoDB](https://github.com/shelfio/jest-mongodb)는 MongoDB를 사용하는 테스트를 수행하는데 요구되는 모든 구성을 제공합니다.
 
-1.  First install `@shelf/jest-mongodb`
+1.  먼저 `@shelf/jest-mongodb`를 설치하세요
 
 ```
 yarn add @shelf/jest-mongodb --dev
 ```
 
-2.  Specify preset in your Jest configuration:
+2.  Jest 구성에 프리셋을 지정하세요:
 
 ```json
 {
@@ -23,7 +23,7 @@ yarn add @shelf/jest-mongodb --dev
 }
 ```
 
-3.  Write your test
+3.  테스트를 작성하세요
 
 ```js
 const {MongoClient} = require('mongodb');
@@ -56,6 +56,6 @@ describe('insert', () => {
 });
 ```
 
-There's no need to load any dependencies.
+어떤 의존성도 로드할 필요가 없습니다
 
-See [documentation](https://github.com/shelfio/jest-mongodb) for details (configuring MongoDB version, etc).
+더 자세한 내용은 (MongoDB 버전 구성하기, 기타 등등) [문서](https://github.com/shelfio/jest-mongodb)를 참고하세요.
